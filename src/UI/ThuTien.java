@@ -28,6 +28,7 @@ public class ThuTien extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Form Thu Tiền");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -44,7 +45,7 @@ public class ThuTien extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(142, 142, 142)
                 .addComponent(jLabel1)
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
