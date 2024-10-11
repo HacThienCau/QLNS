@@ -4,7 +4,7 @@ Lệnh clone thư mục về máy:
 Lệnh chuyển nhánh: 
   git checkout <hai_chữ_cuối_tên_bạn>
   VD: git checkout tuongvy
-Các  lên github: 
+Các lệnh push lên github: 
   git add .
   git commit -m "update"
   git push origin <hai_chữ_cuối_tên_bạn>
