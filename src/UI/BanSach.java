@@ -29,6 +29,7 @@ public class BanSach extends javax.swing.JPanel {
         background1 = new com.component.Background();
 
         setBackground(new java.awt.Color(205, 241, 255));
+        setPreferredSize(new java.awt.Dimension(850, 700));
 
         javax.swing.GroupLayout background1Layout = new javax.swing.GroupLayout(background1);
         background1.setLayout(background1Layout);
