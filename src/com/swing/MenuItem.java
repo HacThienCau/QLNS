@@ -19,7 +19,7 @@ public class MenuItem extends javax.swing.JPanel {
             lbName.setText(data.getName());
         } else if (data.getType() == Model_Menu.MenuType.TITLE) {
             lbIcon.setText(data.getName());
-            lbIcon.setFont(new Font("Nunito Sans 7pt ExtraBold", 1, 14));
+            lbIcon.setFont(new Font("Arial", 1, 14));
             lbName.setVisible(false);
         } else {
             lbName.setText(" ");
