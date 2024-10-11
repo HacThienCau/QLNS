@@ -3,18 +3,119 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package UI;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
 
 /**
  *
  * @author ACER
  */
 public class BanSach extends javax.swing.JPanel {
-
+    private int mode = 0; //0 - chế độ lập phiếu, 1- chế độ tra cứu
     /**
      * Creates new form BanSach
      */
     public BanSach() {
         initComponents();
+        ThemDialog.setVisible(false);
+        setTable1Header();
+        setTable2Header();
+        loadTable1();
+        setMode(0);
+    }
+    private void setMode(int x){
+        if(x==0){
+            ThemSP.setVisible(true);
+            XoaSP.setVisible(true);
+            InHoaDon.setVisible(true);
+            TraCuu.setVisible(true);
+            Tim.setVisible(true);
+            TraCuuPanel.setVisible(true);
+            KTTC.setVisible(false);
+        } else{
+            ThemSP.setVisible(false);
+            XoaSP.setVisible(false);
+            InHoaDon.setVisible(false);
+            TraCuu.setVisible(false);
+            Tim.setVisible(false);
+            TraCuuPanel.setVisible(false);
+            KTTC.setVisible(true);
+        }
+        mode = x;
+    }
+    private void setTable1Header(){
+        jTable1.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            l.setBackground(new Color(0,88,128));
+            l.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+            l.setHorizontalAlignment(CENTER);
+            l.setFont(new Font("Segoe UI",Font.BOLD, 16));            
+            return l;
+        }
+        });
+    }
+    private void setTable2Header(){
+        jTable2.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            l.setBackground(new Color(0,88,128));
+            l.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+            l.setHorizontalAlignment(CENTER);
+            l.setFont(new Font("Segoe UI",Font.BOLD, 16));            
+            return l;
+        }
+        });
+    }
+    private void loadTable1(){
+        // create jTable1 columns
+        DefaultTableModel model = new DefaultTableModel();        
+        String tieude[] = new String[]{ "STT", "Sách","Thể loại", "Số lượng", "Đơn giá bán"};
+        model.setColumnIdentifiers(tieude);
+        // add data
+        // mẫu để test
+        model.addRow(new Object[]{"1","Đắc Nhân Tâm", "Tâm lý", "1", "50000"});
+        model.addRow(new Object[]{"2","Tôi thấy hoa vàng trên cỏ xanh", "Tiểu thuyết", "1", "50000"});
+        
+        
+        
+        
+        jTable1.setModel(model);
+        // set columns width
+        jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        jTable1.getColumnModel().getColumn(0).setPreferredWidth(30);
+        jTable1.getColumnModel().getColumn(1).setPreferredWidth(200);
+        jTable1.getColumnModel().getColumn(2).setPreferredWidth(100);
+        jTable1.getColumnModel().getColumn(3).setPreferredWidth(50);
+        jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);     
+    }
+    private void loadTable2(){
+        // create jTable1 columns
+        DefaultTableModel model = new DefaultTableModel(){           
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; // Không cho phép chỉnh sửa các ô
+        }       
+        };        
+        String tieude[] = new String[]{ "STT", "Họ tên khách hàng","Ngày lập hóa đơn", "Chi tiết hóa đơn"};
+        model.setColumnIdentifiers(tieude);
+        // add data
+        // mẫu để test        
+        model.addRow(new Object[]{"1","Nguyễn Đăng Hương Uyên", "11/10/2024", "Xem"});
+        
+        
+        jTable2.setModel(model);
+        // set columns width
+        jTable2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        jTable2.getColumnModel().getColumn(0).setPreferredWidth(30);
+        jTable2.getColumnModel().getColumn(1).setPreferredWidth(300);
+        jTable2.getColumnModel().getColumn(2).setPreferredWidth(100);
+        jTable2.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);     
     }
 
     /**
@@ -26,36 +127,605 @@ public class BanSach extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ThemDialog = new javax.swing.JDialog();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        ThemButton = new javax.swing.JButton();
+        TenSachField = new javax.swing.JTextField();
+        SoLuongField = new javax.swing.JTextField();
+        panelBorder1 = new com.swing.PanelBorder();
         background1 = new com.component.Background();
+        TitlePanel = new com.swing.PanelBorder();
+        title = new javax.swing.JLabel();
+        hoTen = new javax.swing.JTextField();
+        NLHD = new javax.swing.JTextField();
+        tablePanel = new com.swing.PanelBorder();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        TongTien = new javax.swing.JLabel();
+        TienTra = new javax.swing.JLabel();
+        ConLai = new javax.swing.JLabel();
+        TongTienField = new javax.swing.JTextField();
+        TienTraField = new javax.swing.JTextField();
+        ConLaiField = new javax.swing.JTextField();
+        ThemSP = new javax.swing.JButton();
+        XoaSP = new javax.swing.JButton();
+        InHoaDon = new javax.swing.JButton();
+        TraCuuPanel = new com.swing.PanelBorder();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        TraCuu = new javax.swing.JTextField();
+        Tim = new javax.swing.JButton();
+        KTTC = new javax.swing.JButton();
+
+        ThemDialog.setLocation(new java.awt.Point(600, 200));
+        ThemDialog.setPreferredSize(new java.awt.Dimension(400, 200));
+        ThemDialog.setSize(new java.awt.Dimension(400, 200));
+
+        jLabel1.setText("Nhập tên sách:");
+
+        jLabel2.setText("Số lượng:");
+
+        ThemButton.setText("Thêm");
+        ThemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ThemButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout ThemDialogLayout = new javax.swing.GroupLayout(ThemDialog.getContentPane());
+        ThemDialog.getContentPane().setLayout(ThemDialogLayout);
+        ThemDialogLayout.setHorizontalGroup(
+            ThemDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ThemDialogLayout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addGroup(ThemDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(ThemDialogLayout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(SoLuongField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(ThemDialogLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(35, 35, 35)
+                        .addComponent(TenSachField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(79, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ThemDialogLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ThemButton)
+                .addGap(161, 161, 161))
+        );
+        ThemDialogLayout.setVerticalGroup(
+            ThemDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ThemDialogLayout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addGroup(ThemDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(TenSachField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(ThemDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(SoLuongField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addComponent(ThemButton)
+                .addGap(34, 34, 34))
+        );
 
         setBackground(new java.awt.Color(205, 241, 255));
         setPreferredSize(new java.awt.Dimension(850, 700));
+
+        TitlePanel.setBackground(new java.awt.Color(0, 88, 128));
+        TitlePanel.setPreferredSize(new java.awt.Dimension(144, 34));
+
+        title.setBackground(new java.awt.Color(255, 255, 255));
+        title.setFont(new java.awt.Font("Segoe UI Black", 1, 20)); // NOI18N
+        title.setForeground(new java.awt.Color(255, 255, 255));
+        title.setText("HÓA ĐƠN");
+
+        javax.swing.GroupLayout TitlePanelLayout = new javax.swing.GroupLayout(TitlePanel);
+        TitlePanel.setLayout(TitlePanelLayout);
+        TitlePanelLayout.setHorizontalGroup(
+            TitlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 144, Short.MAX_VALUE)
+            .addGroup(TitlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(TitlePanelLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(title)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        TitlePanelLayout.setVerticalGroup(
+            TitlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 34, Short.MAX_VALUE)
+            .addGroup(TitlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(TitlePanelLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(title)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+
+        hoTen.setBackground(new java.awt.Color(176, 231, 254));
+        hoTen.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        hoTen.setForeground(new java.awt.Color(0, 49, 64));
+        hoTen.setText("Họ tên khách hàng");
+        hoTen.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 88, 128)));
+        hoTen.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                hoTenFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                hoTenFocusLost(evt);
+            }
+        });
+
+        NLHD.setBackground(new java.awt.Color(176, 231, 254));
+        NLHD.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        NLHD.setForeground(new java.awt.Color(0, 49, 64));
+        NLHD.setText("Ngày lập hóa đơn");
+        NLHD.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 88, 128)));
+        NLHD.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                NLHDFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                NLHDFocusLost(evt);
+            }
+        });
+
+        tablePanel.setBackground(new java.awt.Color(0, 88, 128));
+
+        jScrollPane1.setBackground(new java.awt.Color(0, 88, 128));
+        jScrollPane1.setBorder(null);
+
+        jTable1.setBackground(new java.awt.Color(0, 88, 128));
+        jTable1.setForeground(new java.awt.Color(255, 255, 255));
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "STT", "Sách", "Thể loại", "Số lượng", "Đơn giá bán"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jTable1.setFillsViewportHeight(true);
+        jTable1.setGridColor(new java.awt.Color(255, 255, 255));
+        jTable1.setRowHeight(40);
+        jTable1.setSelectionBackground(new java.awt.Color(255, 255, 255));
+        jTable1.setSelectionForeground(new java.awt.Color(0, 88, 128));
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable1.setShowGrid(false);
+        jScrollPane1.setViewportView(jTable1);
+
+        TongTien.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        TongTien.setForeground(new java.awt.Color(255, 255, 255));
+        TongTien.setText("Tổng tiền:");
+
+        TienTra.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        TienTra.setForeground(new java.awt.Color(255, 255, 255));
+        TienTra.setText("Số tiền trả:");
+
+        ConLai.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        ConLai.setForeground(new java.awt.Color(255, 255, 255));
+        ConLai.setText("Còn lại:");
+
+        TongTienField.setEditable(false);
+        TongTienField.setBackground(new java.awt.Color(0, 88, 128));
+        TongTienField.setForeground(new java.awt.Color(255, 255, 255));
+        TongTienField.setBorder(null);
+        TongTienField.setSelectedTextColor(new java.awt.Color(0, 88, 128));
+        TongTienField.setSelectionColor(new java.awt.Color(255, 255, 255));
+
+        TienTraField.setBackground(new java.awt.Color(0, 88, 128));
+        TienTraField.setForeground(new java.awt.Color(255, 255, 255));
+        TienTraField.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(255, 255, 255)));
+        TienTraField.setSelectedTextColor(new java.awt.Color(0, 88, 128));
+        TienTraField.setSelectionColor(new java.awt.Color(255, 255, 255));
+
+        ConLaiField.setEditable(false);
+        ConLaiField.setBackground(new java.awt.Color(0, 88, 128));
+        ConLaiField.setForeground(new java.awt.Color(255, 255, 255));
+        ConLaiField.setBorder(null);
+        ConLaiField.setSelectedTextColor(new java.awt.Color(0, 88, 128));
+        ConLaiField.setSelectionColor(new java.awt.Color(255, 255, 255));
+
+        ThemSP.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        ThemSP.setForeground(new java.awt.Color(0, 88, 128));
+        ThemSP.setText("Thêm sản phẩm");
+        ThemSP.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 88, 128), 3, true));
+        ThemSP.setPreferredSize(new java.awt.Dimension(140, 40));
+        ThemSP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ThemSPActionPerformed(evt);
+            }
+        });
+
+        XoaSP.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        XoaSP.setForeground(new java.awt.Color(0, 88, 128));
+        XoaSP.setText("Xóa sản phẩm");
+        XoaSP.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 88, 128), 3, true));
+        XoaSP.setPreferredSize(new java.awt.Dimension(140, 40));
+        XoaSP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                XoaSPActionPerformed(evt);
+            }
+        });
+
+        InHoaDon.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        InHoaDon.setForeground(new java.awt.Color(0, 88, 128));
+        InHoaDon.setText("In hóa đơn");
+        InHoaDon.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 88, 128), 3, true));
+        InHoaDon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                InHoaDonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout tablePanelLayout = new javax.swing.GroupLayout(tablePanel);
+        tablePanel.setLayout(tablePanelLayout);
+        tablePanelLayout.setHorizontalGroup(
+            tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tablePanelLayout.createSequentialGroup()
+                .addGap(63, 63, 63)
+                .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(tablePanelLayout.createSequentialGroup()
+                        .addComponent(ThemSP, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35)
+                        .addComponent(XoaSP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(InHoaDon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(tablePanelLayout.createSequentialGroup()
+                        .addComponent(ConLai, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ConLaiField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(tablePanelLayout.createSequentialGroup()
+                        .addComponent(TienTra, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(TienTraField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(tablePanelLayout.createSequentialGroup()
+                        .addComponent(TongTien, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(TongTienField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(40, 40, 40))
+            .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(tablePanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+        tablePanelLayout.setVerticalGroup(
+            tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tablePanelLayout.createSequentialGroup()
+                .addContainerGap(260, Short.MAX_VALUE)
+                .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(tablePanelLayout.createSequentialGroup()
+                        .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ThemSP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(XoaSP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(InHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(tablePanelLayout.createSequentialGroup()
+                        .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(TongTien, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(TongTienField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TienTraField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(TienTra, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ConLai, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ConLaiField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(16, 16, 16))
+            .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(tablePanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(122, Short.MAX_VALUE)))
+        );
+
+        TraCuuPanel.setBackground(new java.awt.Color(0, 88, 128));
+
+        jScrollPane2.setBackground(new java.awt.Color(0, 88, 128));
+        jScrollPane2.setBorder(null);
+
+        jTable2.setBackground(new java.awt.Color(0, 88, 128));
+        jTable2.setForeground(new java.awt.Color(255, 255, 255));
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "STT", "Họ tên khách hàng", "Ngày lập hóa đơn", "Chi Tiết Hóa Đơn"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jTable2.setFillsViewportHeight(true);
+        jTable2.setGridColor(new java.awt.Color(255, 255, 255));
+        jTable2.setRowHeight(40);
+        jTable2.setSelectionBackground(new java.awt.Color(255, 255, 255));
+        jTable2.setSelectionForeground(new java.awt.Color(0, 88, 128));
+        jTable2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable2.setShowGrid(false);
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable2MouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jTable2);
+
+        javax.swing.GroupLayout TraCuuPanelLayout = new javax.swing.GroupLayout(TraCuuPanel);
+        TraCuuPanel.setLayout(TraCuuPanelLayout);
+        TraCuuPanelLayout.setHorizontalGroup(
+            TraCuuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TraCuuPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2)
+                .addContainerGap())
+        );
+        TraCuuPanelLayout.setVerticalGroup(
+            TraCuuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TraCuuPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        TraCuu.setBackground(new java.awt.Color(82, 199, 253));
+        TraCuu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        TraCuu.setForeground(new java.awt.Color(0, 49, 64));
+        TraCuu.setText("Nhập thông tin hóa đơn cần tra cứu");
+        TraCuu.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 88, 128)));
+        TraCuu.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                TraCuuFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                TraCuuFocusLost(evt);
+            }
+        });
+
+        Tim.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        Tim.setForeground(new java.awt.Color(0, 88, 128));
+        Tim.setText("Tìm");
+        Tim.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 88, 128), 3, true));
+        Tim.setPreferredSize(new java.awt.Dimension(140, 40));
+        Tim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TimActionPerformed(evt);
+            }
+        });
+
+        KTTC.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        KTTC.setForeground(new java.awt.Color(0, 88, 128));
+        KTTC.setText("Kết thúc tra cứu");
+        KTTC.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 88, 128), 3, true));
+        KTTC.setPreferredSize(new java.awt.Dimension(140, 40));
+        KTTC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                KTTCActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout background1Layout = new javax.swing.GroupLayout(background1);
         background1.setLayout(background1Layout);
         background1Layout.setHorizontalGroup(
             background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 687, Short.MAX_VALUE)
+            .addGroup(background1Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(TitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, background1Layout.createSequentialGroup()
+                .addContainerGap(61, Short.MAX_VALUE)
+                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, background1Layout.createSequentialGroup()
+                        .addComponent(TraCuu, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Tim, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(KTTC, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, background1Layout.createSequentialGroup()
+                            .addGap(23, 23, 23)
+                            .addComponent(hoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(85, 85, 85)
+                            .addComponent(NLHD, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(31, 31, 31))
+                        .addComponent(TraCuuPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(50, 50, 50))
         );
         background1Layout.setVerticalGroup(
             background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 546, Short.MAX_VALUE)
+            .addGroup(background1Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(TitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(hoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(NLHD, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(TraCuu, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(Tim, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(KTTC, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(TraCuuPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(23, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
+        panelBorder1.setLayout(panelBorder1Layout);
+        panelBorder1Layout.setHorizontalGroup(
+            panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(background1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        panelBorder1Layout.setVerticalGroup(
+            panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(background1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(background1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(background1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelBorder1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void hoTenFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_hoTenFocusLost
+        if("".equals(hoTen.getText())){
+            hoTen.setText("Họ tên khách hàng");
+        }
+    }//GEN-LAST:event_hoTenFocusLost
+    private void hoTenFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_hoTenFocusGained
+        if("Họ tên khách hàng".equals(hoTen.getText())){
+            hoTen.setText("");
+        }
+    }//GEN-LAST:event_hoTenFocusGained
+    private void NLHDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_NLHDFocusGained
+        if("Ngày lập hóa đơn".equals(NLHD.getText())){
+            NLHD.setText("");
+        }
+    }//GEN-LAST:event_NLHDFocusGained
+    private void NLHDFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_NLHDFocusLost
+        if("".equals(NLHD.getText())){
+            NLHD.setText("Ngày lập hóa đơn");
+        }
+    }//GEN-LAST:event_NLHDFocusLost
+    private void ThemSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemSPActionPerformed
+        ThemDialog.setVisible(true);
+    }//GEN-LAST:event_ThemSPActionPerformed
+
+    private void ThemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemButtonActionPerformed
+        TenSachField.setText("");
+        SoLuongField.setText("");
+        ThemDialog.setVisible(false);
+        
+        
+        
+        
+        
+    }//GEN-LAST:event_ThemButtonActionPerformed
+
+    private void XoaSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_XoaSPActionPerformed
+        
+        
+        
+        
+        
+    }//GEN-LAST:event_XoaSPActionPerformed
+
+    private void InHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InHoaDonActionPerformed
+
+        
+        
+        
+    }//GEN-LAST:event_InHoaDonActionPerformed
+
+    private void TraCuuFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TraCuuFocusGained
+        if("Nhập thông tin hóa đơn cần tra cứu".equals(TraCuu.getText())){
+            TraCuu.setText("");
+        }
+    }//GEN-LAST:event_TraCuuFocusGained
+    private void TraCuuFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TraCuuFocusLost
+        if("".equals(TraCuu.getText())){
+            TraCuu.setText("Nhập thông tin hóa đơn cần tra cứu");
+        }
+    }//GEN-LAST:event_TraCuuFocusLost
+    private void TimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TimActionPerformed
+        TraCuu.setText("Nhập thông tin hóa đơn cần tra cứu");
+        
+        
+        
+        
+        
+        loadTable2();
+    }//GEN-LAST:event_TimActionPerformed
+
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+        if(evt.getClickCount()==2){ //bấm đúp chuột
+            if(jTable2.getSelectedColumn()==3 ){ // cột CTHD
+                setMode(1);
+            }
+            
+            
+            
+            
+            
+            
+        }
+    }//GEN-LAST:event_jTable2MouseClicked
+
+    private void KTTCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KTTCActionPerformed
+        setMode(0);
+    }//GEN-LAST:event_KTTCActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ConLai;
+    private javax.swing.JLabel ConLai1;
+    private javax.swing.JTextField ConLaiField;
+    private javax.swing.JTextField ConLaiField1;
+    private javax.swing.JButton InHoaDon;
+    private javax.swing.JButton InHoaDon1;
+    private javax.swing.JButton KTTC;
+    private javax.swing.JTextField NLHD;
+    private javax.swing.JTextField SoLuongField;
+    private javax.swing.JTextField TenSachField;
+    private javax.swing.JButton ThemButton;
+    private javax.swing.JDialog ThemDialog;
+    private javax.swing.JButton ThemSP;
+    private javax.swing.JButton ThemSP1;
+    private javax.swing.JLabel TienTra;
+    private javax.swing.JLabel TienTra1;
+    private javax.swing.JTextField TienTraField;
+    private javax.swing.JTextField TienTraField1;
+    private javax.swing.JButton Tim;
+    private com.swing.PanelBorder TitlePanel;
+    private javax.swing.JLabel TongTien;
+    private javax.swing.JLabel TongTien1;
+    private javax.swing.JTextField TongTienField;
+    private javax.swing.JTextField TongTienField1;
+    private javax.swing.JTextField TraCuu;
+    private com.swing.PanelBorder TraCuuPanel;
+    private javax.swing.JButton XoaSP;
+    private javax.swing.JButton XoaSP1;
     private com.component.Background background1;
+    private javax.swing.JTextField hoTen;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable3;
+    private com.swing.PanelBorder panelBorder1;
+    private com.swing.PanelBorder tablePanel;
+    private com.swing.PanelBorder tablePanel1;
+    private javax.swing.JLabel title;
     // End of variables declaration//GEN-END:variables
 }
