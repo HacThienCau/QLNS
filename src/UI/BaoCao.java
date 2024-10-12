@@ -4,9 +4,6 @@
  */
 package UI;
 
-import java.awt.Color;
-import javax.swing.JTextField;
-
 /**
  *
  * @author ACER
@@ -18,30 +15,6 @@ public class BaoCao extends javax.swing.JPanel {
      */
     public BaoCao() {
         initComponents();
-        // Lấy JTextField từ JDateChooser
-        JTextField dateField = (JTextField) jDateChooser1.getDateEditor().getUiComponent();
-        // Đặt placeholder
-        String placeholder = "Ngày nhập";
-        dateField.setText(placeholder);
-        dateField.setForeground(Color.GRAY);
-        // Thêm sự kiện Focus để xử lý khi focus vào hoặc ra khỏi trường nhập liệu
-        dateField.addFocusListener(new java.awt.event.FocusAdapter() {
-        @Override
-        public void focusGained(java.awt.event.FocusEvent evt) {
-            if (dateField.getText().equals(placeholder)) {
-                dateField.setText("");
-                dateField.setForeground(Color.BLACK);
-            }
-        }
-
-        @Override
-        public void focusLost(java.awt.event.FocusEvent evt) {
-            if (dateField.getText().isEmpty()) {
-                dateField.setText(placeholder);
-                dateField.setForeground(Color.GRAY);
-            }
-        }
-    });  
     }
 
     /**
@@ -53,142 +26,31 @@ public class BaoCao extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        background1 = new com.component.Background();
-        panelBorder1 = new com.swing.PanelBorder();
         jLabel1 = new javax.swing.JLabel();
-        panelBorder3 = new com.swing.PanelBorder();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        Table = new rojerusan.RSTableMetro();
 
-        background1.setPreferredSize(new java.awt.Dimension(850, 700));
-
-        panelBorder1.setBackground(new java.awt.Color(0, 88, 128));
-
-        jLabel1.setBackground(new java.awt.Color(0, 88, 128));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("BÁO CÁO TỒN");
-
-        javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
-        panelBorder1.setLayout(panelBorder1Layout);
-        panelBorder1Layout.setHorizontalGroup(
-            panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelBorder1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
-        );
-        panelBorder1Layout.setVerticalGroup(
-            panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBorder1Layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
-        panelBorder3.setBackground(new java.awt.Color(0, 88, 128));
-
-        jDateChooser1.setBackground(new java.awt.Color(0, 88, 128));
-
-        Table.setBackground(new java.awt.Color(0, 88, 128));
-        Table.setForeground(new java.awt.Color(255, 255, 255));
-        Table.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "STT", "Mã sách", "Tên sách", "Tồn đầu", "Phát sinh", "Tồn cuối"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Long.class, java.lang.Long.class, java.lang.Long.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        Table.setColorBackgoundHead(new java.awt.Color(0, 88, 128));
-        Table.setColorBordeFilas(new java.awt.Color(255, 255, 255));
-        Table.setColorBordeHead(new java.awt.Color(255, 255, 255));
-        Table.setColorFilasBackgound1(new java.awt.Color(0, 88, 128));
-        Table.setColorFilasBackgound2(new java.awt.Color(0, 88, 128));
-        Table.setColorFilasForeground1(new java.awt.Color(255, 255, 255));
-        Table.setColorFilasForeground2(new java.awt.Color(255, 255, 255));
-        Table.setColorSelBackgound(new java.awt.Color(51, 51, 51));
-        Table.setFuenteFilas(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        Table.setFuenteFilasSelect(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        Table.setFuenteHead(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
-        Table.setGridColor(new java.awt.Color(255, 255, 255));
-        Table.setSelectionBackground(new java.awt.Color(51, 51, 51));
-        Table.setSelectionForeground(new java.awt.Color(255, 255, 255));
-        jScrollPane4.setViewportView(Table);
-
-        javax.swing.GroupLayout panelBorder3Layout = new javax.swing.GroupLayout(panelBorder3);
-        panelBorder3.setLayout(panelBorder3Layout);
-        panelBorder3Layout.setHorizontalGroup(
-            panelBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelBorder3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(171, 171, 171))
-            .addGroup(panelBorder3Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
-        );
-        panelBorder3Layout.setVerticalGroup(
-            panelBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBorder3Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout background1Layout = new javax.swing.GroupLayout(background1);
-        background1.setLayout(background1Layout);
-        background1Layout.setHorizontalGroup(
-            background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(background1Layout.createSequentialGroup()
-                .addGap(70, 70, 70)
-                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panelBorder3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(70, Short.MAX_VALUE))
-        );
-        background1Layout.setVerticalGroup(
-            background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(background1Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
-                .addComponent(panelBorder3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        jLabel1.setText("Form Báo Cáo");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(background1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(119, 119, 119)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(136, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(background1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(142, 142, 142)
+                .addComponent(jLabel1)
+                .addContainerGap(133, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private rojerusan.RSTableMetro Table;
-    private com.component.Background background1;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane4;
-    private com.swing.PanelBorder panelBorder1;
-    private com.swing.PanelBorder panelBorder3;
     // End of variables declaration//GEN-END:variables
 }
