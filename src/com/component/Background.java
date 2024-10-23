@@ -31,7 +31,7 @@ public class Background extends javax.swing.JPanel {
         GradientPaint g = new GradientPaint(0, 0, Color.decode("#CCF1FF"), 0, getHeight(), Color.decode("#00ABFD"));
         g2.setPaint(g);
         g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
-        g2.fillRect(getWidth() - 20, 0, getWidth(), getHeight());
+        g2.fillRect(0, 0, getWidth()-20, getHeight());
         super.paintComponent(grphcs);
     }
     /**
