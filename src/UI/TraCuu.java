@@ -5,6 +5,7 @@
 package UI;
 
 
+import static UI.DatabaseConnect.getJDBCConnection;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -13,17 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class TraCuu extends javax.swing.JPanel {
-
+    Connection conn = getJDBCConnection();
+    PreparedStatement ps = null;
+    ResultSet rs = null; 
     public TraCuu() {
         initComponents();
     }
     public void searchBooks(String madausach, String tentheloai, String tentacgia, String nhaxuatban) {
-  try {
-          Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sach", "root", "");
-          
+        
           StringBuilder sql = new StringBuilder("SELECT s.MASACH, d.TENDAUSACH, a.TENTG , t.TENTHELOAI AS tentheloai, s.NXB, s.NAMXB, s.SLTON " +
     "FROM sach s " +
     "JOIN dausach d ON s.MADAUSACH = d.MADAUSACH " +
@@ -39,21 +42,21 @@ public class TraCuu extends javax.swing.JPanel {
     conditions.add("a.TENTG LIKE ?");
     q++;k++;s++;
   } else {j=0;
-  }
-  if (!tentheloai.equals("Chon")) {
+  } 
+  if (!tentheloai.isBlank()) {
     conditions.add("t.TENTHELOAI LIKE ?");
     k++;s++;
   } else {q=0;
-  }
-  if (!madausach.equals("Chon")) {
+  } 
+  if (!madausach.isBlank()) {
     conditions.add("d.TENDAUSACH LIKE ?");
     s++;
   } else {k=0;
-  }
-  if (!nhaxuatban.equals("Chon")) {
+  } 
+  if (!nhaxuatban.isBlank()) {
     conditions.add("s.NXB LIKE ?");
   } else {s=0;
-  }
+  } 
 if (!conditions.isEmpty()) {
         sql.append(" WHERE ");
         for (int i = 0; i < conditions.size(); i++) {
@@ -64,12 +67,15 @@ if (!conditions.isEmpty()) {
         }
     }
 
-PreparedStatement statement = connection.prepareStatement(sql.toString());
-if (j!=0){statement.setString(j, "%" + tentacgia + "%");};
-if (q!=0){statement.setString(q, "%" + tentheloai + "%");};
-if (k!=0){statement.setString(k, "%" + madausach + "%");};
-if (s!=0){statement.setString(s, "%" + nhaxuatban + "%");};
-ResultSet resultSet = statement.executeQuery();
+        try {
+            ps = conn.prepareStatement(sql.toString());
+            if (j!=0){ps.setString(j, "%" + tentacgia + "%");};
+            if (q!=0){ps.setString(q, "%" + tentheloai + "%");};
+            if (k!=0){ps.setString(k, "%" + madausach + "%");};
+            if (s!=0){ps.setString(s, "%" + nhaxuatban + "%");};
+            rs = ps.executeQuery();
+
+        
 
     DefaultTableModel model = new DefaultTableModel();
     model.addColumn("Mã sách");
@@ -79,20 +85,20 @@ ResultSet resultSet = statement.executeQuery();
     model.addColumn("Thể loại");
 
 
-    while (resultSet.next()) {
+    while (rs.next()) {
       Vector<Object> rowData = new Vector<>();
-      rowData.add(resultSet.getString("MASACH"));
-      rowData.add(resultSet.getString("TENDAUSACH"));
-      rowData.add(resultSet.getString("TENTG"));
-      rowData.add(resultSet.getString("SLTON"));
-      rowData.add(resultSet.getString("TENTHELOAI"));
+      rowData.add(rs.getString("MASACH"));
+      rowData.add(rs.getString("TENDAUSACH"));
+      rowData.add(rs.getString("TENTG"));
+      rowData.add(rs.getString("SLTON"));
+      rowData.add(rs.getString("TENTHELOAI"));
       model.addRow(rowData);
     }
 
     tb_phieunhap.setModel(model);
-  } catch (SQLException e) {
-    e.printStackTrace();
-  }
+    } catch (SQLException ex) {
+            Logger.getLogger(TraCuu.class.getName()).log(Level.SEVERE, null, ex);
+    }
 }
 
     
@@ -106,17 +112,17 @@ ResultSet resultSet = statement.executeQuery();
 
         kGradientPanel1 = new com.k33ptoo.components.KGradientPanel();
         rSMaterialButtonRectangle2 = new rojerusan.RSMaterialButtonRectangle();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jComboBox4 = new javax.swing.JComboBox<>();
         rSMaterialButtonRectangle4 = new rojerusan.RSMaterialButtonRectangle();
-        jComboBox5 = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         tb_phieunhap = new javax.swing.JTable();
         lb_masach = new javax.swing.JLabel();
         lb_masach2 = new javax.swing.JLabel();
         lb_masach3 = new javax.swing.JLabel();
         lb_masach4 = new javax.swing.JLabel();
+        DS = new javax.swing.JTextField();
+        TG = new javax.swing.JTextField();
+        TL = new javax.swing.JTextField();
+        NXB = new javax.swing.JTextField();
 
         kGradientPanel1.setBackground(new java.awt.Color(205, 241, 255));
         kGradientPanel1.setkEndColor(new java.awt.Color(0, 171, 253));
@@ -130,30 +136,6 @@ ResultSet resultSet = statement.executeQuery();
             }
         });
 
-        jComboBox1.setBackground(new java.awt.Color(205, 241, 255));
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chon", "Tam Cam", "Thanh Giong", "Harry Porter", "Shin Cau Be But Chi" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
-
-        jComboBox2.setBackground(new java.awt.Color(205, 241, 255));
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chon", "Co Tich", "Huyen Bi", "Manga", " " }));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
-            }
-        });
-
-        jComboBox4.setBackground(new java.awt.Color(205, 241, 255));
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chon", "Usui Yoshito", "Pham Thoai", "Joanne Rowling" }));
-        jComboBox4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox4ActionPerformed(evt);
-            }
-        });
-
         rSMaterialButtonRectangle4.setText("TÌM KIẾM");
         rSMaterialButtonRectangle4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         rSMaterialButtonRectangle4.setSelected(true);
@@ -163,15 +145,8 @@ ResultSet resultSet = statement.executeQuery();
             }
         });
 
-        jComboBox5.setBackground(new java.awt.Color(205, 241, 255));
-        jComboBox5.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chon", "Kim Dong", "Thanh Nien", "Thieu Nhi" }));
-        jComboBox5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox5ActionPerformed(evt);
-            }
-        });
-
         tb_phieunhap.setBackground(new java.awt.Color(0, 88, 128));
+        tb_phieunhap.setForeground(new java.awt.Color(255, 255, 255));
         tb_phieunhap.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -207,9 +182,11 @@ ResultSet resultSet = statement.executeQuery();
                 return types [columnIndex];
             }
         });
+        tb_phieunhap.setFillsViewportHeight(true);
         tb_phieunhap.setGridColor(new java.awt.Color(255, 255, 255));
         tb_phieunhap.setRowHeight(40);
-        tb_phieunhap.setSelectionBackground(new java.awt.Color(153, 255, 255));
+        tb_phieunhap.setSelectionBackground(new java.awt.Color(255, 255, 255));
+        tb_phieunhap.setSelectionForeground(new java.awt.Color(0, 88, 128));
         jScrollPane1.setViewportView(tb_phieunhap);
 
         lb_masach.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -231,58 +208,58 @@ ResultSet resultSet = statement.executeQuery();
             .addGroup(kGradientPanel1Layout.createSequentialGroup()
                 .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(lb_masach2)
-                        .addGap(23, 23, 23)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(kGradientPanel1Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 870, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(kGradientPanel1Layout.createSequentialGroup()
                         .addGap(29, 29, 29)
                         .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(rSMaterialButtonRectangle4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                                .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addGroup(kGradientPanel1Layout.createSequentialGroup()
                                         .addComponent(lb_masach)
                                         .addGap(18, 18, 18)
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(99, 99, 99)
-                                        .addComponent(lb_masach3))
-                                    .addComponent(lb_masach4))
+                                        .addComponent(DS, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(kGradientPanel1Layout.createSequentialGroup()
+                                        .addGap(1, 1, 1)
+                                        .addComponent(lb_masach2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(TL, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(63, 63, 63)
+                                .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lb_masach3, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lb_masach4, javax.swing.GroupLayout.Alignment.TRAILING))
                                 .addGap(18, 18, 18)
                                 .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(TG, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(NXB, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addGap(0, 27, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
         );
         kGradientPanel1Layout.setVerticalGroup(
             kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(kGradientPanel1Layout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
+                .addGap(9, 9, 9)
                 .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lb_masach))
-                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(lb_masach3)))
-                .addGap(20, 20, 20)
+                        .addComponent(lb_masach3)
+                        .addComponent(TG, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(DS, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lb_masach)))
                 .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(lb_masach2))
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
+                        .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lb_masach2)
+                            .addComponent(TL, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
+                        .addGap(20, 20, 20)
                         .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lb_masach4)
-                            .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(NXB, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addComponent(rSMaterialButtonRectangle4, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
@@ -306,7 +283,7 @@ ResultSet resultSet = statement.executeQuery();
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(kGradientPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 656, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(kGradientPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -315,37 +292,21 @@ ResultSet resultSet = statement.executeQuery();
         // TODO add your handling code here:
     }//GEN-LAST:event_rSMaterialButtonRectangle2ActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
     private void rSMaterialButtonRectangle4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonRectangle4ActionPerformed
-String madausach = (String) jComboBox1.getSelectedItem();
-String tentheloai = (String) jComboBox2.getSelectedItem();
-String tentacgia = (String) jComboBox4.getSelectedItem();
-String nhaxuatban = (String) jComboBox5.getSelectedItem();
+String madausach = DS.getText();
+String tentheloai = TL.getText();
+String tentacgia = TG.getText();
+String nhaxuatban = NXB.getText();
 
             searchBooks(madausach, tentheloai, tentacgia, nhaxuatban);
     }//GEN-LAST:event_rSMaterialButtonRectangle4ActionPerformed
 
-    private void jComboBox5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox5ActionPerformed
-
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox2ActionPerformed
-
-    private void jComboBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox4ActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox4;
-    private javax.swing.JComboBox<String> jComboBox5;
+    private javax.swing.JTextField DS;
+    private javax.swing.JTextField NXB;
+    private javax.swing.JTextField TG;
+    private javax.swing.JTextField TL;
     private javax.swing.JScrollPane jScrollPane1;
     private com.k33ptoo.components.KGradientPanel kGradientPanel1;
     private javax.swing.JLabel lb_masach;
