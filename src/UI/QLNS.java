@@ -77,8 +77,6 @@ public class QLNS extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocation(new java.awt.Point(250, 50));
-        setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(1100, 700));
         setSize(new java.awt.Dimension(1100, 700));
 
         panelBorder1.setPreferredSize(new java.awt.Dimension(1100, 700));
