@@ -4,19 +4,44 @@
  */
 package UI;
 
+import static UI.DatabaseConnect.getJDBCConnection;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import static javax.swing.SwingConstants.CENTER;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author DELL5289
  */
 public class TracuuPhieunhap extends javax.swing.JPanel {
-
+    Connection conn = getJDBCConnection();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
     /**
      * Creates new form TracuuPhieunhap
      */
     public TracuuPhieunhap() {
         initComponents();
+        setTable1Header();
+        loadTable1();
+        
     }
 
     /**
@@ -28,20 +53,20 @@ public class TracuuPhieunhap extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        background1 = new com.component.Background();
         jScrollPane1 = new javax.swing.JScrollPane();
         tb_phieunhap = new javax.swing.JTable();
         title_PN = new javax.swing.JLabel();
+        NN = new javax.swing.JTextField();
         lb_ngaynhap = new javax.swing.JLabel();
-        tx_ngaynhap = new javax.swing.JTextField();
-        tx_maphieu = new javax.swing.JTextField();
+        MPN = new javax.swing.JTextField();
         lb_maphieu = new javax.swing.JLabel();
         bt_tracuu = new javax.swing.JButton();
-        bt_chinhsua = new javax.swing.JButton();
-        background1 = new com.component.Background();
 
         setPreferredSize(new java.awt.Dimension(838, 651));
 
         tb_phieunhap.setBackground(new java.awt.Color(0, 88, 128));
+        tb_phieunhap.setForeground(new java.awt.Color(255, 255, 255));
         tb_phieunhap.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -77,19 +102,33 @@ public class TracuuPhieunhap extends javax.swing.JPanel {
                 return types [columnIndex];
             }
         });
+        tb_phieunhap.setFillsViewportHeight(true);
         tb_phieunhap.setGridColor(new java.awt.Color(255, 255, 255));
         tb_phieunhap.setRowHeight(40);
-        tb_phieunhap.setSelectionBackground(new java.awt.Color(153, 255, 255));
+        tb_phieunhap.setSelectionBackground(new java.awt.Color(255, 255, 255));
+        tb_phieunhap.setSelectionForeground(new java.awt.Color(0, 88, 128));
+        tb_phieunhap.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tb_phieunhap.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tb_phieunhapMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tb_phieunhap);
 
         title_PN.setBackground(new java.awt.Color(0, 0, 153));
         title_PN.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         title_PN.setForeground(new java.awt.Color(0, 0, 102));
-        title_PN.setText("PHIẾU NHẬP SÁCH");
+        title_PN.setText("TRA CỨU PHIẾU NHẬP");
         title_PN.setInheritsPopupMenu(false);
+
+        NN.setEditable(false);
+        NN.setFocusable(false);
 
         lb_ngaynhap.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lb_ngaynhap.setText("Ngày nhập");
+
+        MPN.setEditable(false);
+        MPN.setFocusable(false);
 
         lb_maphieu.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         lb_maphieu.setText("Mã phiếu");
@@ -102,18 +141,52 @@ public class TracuuPhieunhap extends javax.swing.JPanel {
             }
         });
 
-        bt_chinhsua.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
-        bt_chinhsua.setText("Chỉnh sửa");
-
         javax.swing.GroupLayout background1Layout = new javax.swing.GroupLayout(background1);
         background1.setLayout(background1Layout);
         background1Layout.setHorizontalGroup(
             background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 835, Short.MAX_VALUE)
+            .addGap(0, 856, Short.MAX_VALUE)
+            .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(background1Layout.createSequentialGroup()
+                    .addGap(37, 37, 37)
+                    .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(background1Layout.createSequentialGroup()
+                            .addComponent(lb_maphieu)
+                            .addGap(18, 18, 18)
+                            .addComponent(MPN, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(background1Layout.createSequentialGroup()
+                            .addGap(0, 453, Short.MAX_VALUE)
+                            .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(background1Layout.createSequentialGroup()
+                                    .addComponent(lb_ngaynhap)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(NN, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(bt_tracuu, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGap(62, 62, 62))
+                .addGroup(background1Layout.createSequentialGroup()
+                    .addGap(61, 61, 61)
+                    .addComponent(title_PN, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 844, Short.MAX_VALUE))
         );
         background1Layout.setVerticalGroup(
             background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 651, Short.MAX_VALUE)
+            .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(background1Layout.createSequentialGroup()
+                    .addGap(29, 29, 29)
+                    .addComponent(title_PN)
+                    .addGap(32, 32, 32)
+                    .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(NN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lb_ngaynhap)
+                        .addComponent(MPN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lb_maphieu))
+                    .addGap(18, 18, 18)
+                    .addComponent(bt_tracuu)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -121,84 +194,94 @@ public class TracuuPhieunhap extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lb_maphieu)
-                        .addGap(18, 18, 18)
-                        .addComponent(tx_maphieu, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lb_ngaynhap)
-                                .addGap(18, 18, 18)
-                                .addComponent(tx_ngaynhap, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(bt_chinhsua, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(547, 547, 547)
-                                .addComponent(bt_tracuu, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(50, 50, 50))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(55, 55, 55)
-                .addComponent(title_PN, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(background1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(background1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(58, Short.MAX_VALUE)
-                .addComponent(title_PN)
-                .addGap(32, 32, 32)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tx_ngaynhap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lb_ngaynhap)
-                    .addComponent(tx_maphieu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lb_maphieu))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bt_chinhsua)
-                    .addComponent(bt_tracuu))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(background1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(background1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
-
-        bt_chinhsua.getAccessibleContext().setAccessibleName("bt_chinhsua");
     }// </editor-fold>//GEN-END:initComponents
-
+    private void loadTable1(){
+        // create jTable1 columns
+        DefaultTableModel model = new DefaultTableModel(){
+            //không cho chỉnh sửa trong bảng
+            @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+        };
+        String tieude[] = new String[]{ "STT", "Mã phiếu nhập", "Ngày nhập", "Tổng số lượng nhập", "Tổng tiền"};
+        model.setColumnIdentifiers(tieude);
+        String sql = "SELECT * FROM phieunhapsach";
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            DecimalFormat df = new DecimalFormat("#.##");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            int i = 0 ;
+            while(rs.next()){
+                model.addRow(new Object[]{(i+1),rs.getString("MAPHIEUNHAP"), sdf.format(rs.getDate("NGAYNHAP")), rs.getInt("TONGSLNHAP"), df.format(rs.getFloat("TONGTIEN"))});
+                i++;
+            }
+            tb_phieunhap.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(QLKH.class.getName()).log(Level.SEVERE, null, ex);
+        }      
+         
+    }
+    private void setTable1Header(){
+        tb_phieunhap.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            l.setBackground(new Color(0,88,128));
+            l.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+            l.setHorizontalAlignment(CENTER);
+            l.setFont(new Font("Segoe UI",Font.BOLD, 16));            
+            return l;
+        }
+        });
+    }
     private void bt_tracuuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_tracuuMouseClicked
-        // TODO add your handling code here:
+        int rowNo = tb_phieunhap.getSelectedRow();
+        if(rowNo<0){
+            JOptionPane.showMessageDialog(TracuuPhieunhap.this, "Vui lòng chọn một phiếu để tiến hành tra cứu");
+            return;
+        }
         JFrame frame = new JFrame();
-        ChitietPhieunhap chitiet = new ChitietPhieunhap();
+        String mpn = MPN.getText();
+        String nn = NN.getText();
+        ChitietPhieunhap chitiet = new ChitietPhieunhap(mpn,nn);
         frame.add(chitiet);
         frame.setSize(838, 651);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }//GEN-LAST:event_bt_tracuuMouseClicked
 
+    private void tb_phieunhapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tb_phieunhapMouseClicked
+        int rowNo = tb_phieunhap.getSelectedRow();
+        if(rowNo < 0 ) return;
+        TableModel model = tb_phieunhap.getModel();
+        MPN.setText(model.getValueAt(rowNo, 1).toString());
+        NN.setText(model.getValueAt(rowNo, 2).toString());
+    }//GEN-LAST:event_tb_phieunhapMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField MPN;
+    private javax.swing.JTextField NN;
     private com.component.Background background1;
-    private javax.swing.JButton bt_chinhsua;
     private javax.swing.JButton bt_tracuu;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lb_maphieu;
     private javax.swing.JLabel lb_ngaynhap;
     private javax.swing.JTable tb_phieunhap;
     private javax.swing.JLabel title_PN;
-    private javax.swing.JTextField tx_maphieu;
-    private javax.swing.JTextField tx_ngaynhap;
     // End of variables declaration//GEN-END:variables
 }
