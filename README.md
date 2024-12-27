@@ -11,3 +11,7 @@
 ## Sau đó lên github nhấn vào nút "Compare & Pull request..."
 # Muốn cập nhật phần mới nhất từ main về nhánh của mình:
   ## git pull origin main 
+
+## Vui lòng chỉnh lại nội dung trong  DatabaseConnect theo cấu hình kết nối mySql của máy bạn để có thể kết nối với CSDL
+Link tạo bảng CSDL và một số dữ liệu mẫu:
+https://uithcm-my.sharepoint.com/:u:/g/personal/22521701_ms_uit_edu_vn/EWU7edHZH6tMrV2IQzu3nfUBTyEmoeak5tmHM4yhxH4Yag?e=ovFHgY

@@ -3,10 +3,8 @@ import com.event.EventMenuSelected;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-/**
- *
- * @author ACER
- */
+
+
 public class QLNS extends javax.swing.JFrame {
 
     /*
@@ -71,6 +69,7 @@ public class QLNS extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        evaluatorByte1 = new org.jdesktop.core.animation.timing.evaluators.EvaluatorByte();
         panelBorder1 = new com.swing.PanelBorder();
         menu = new com.component.Menu();
         mainPanel = new javax.swing.JPanel();
@@ -150,6 +149,7 @@ public class QLNS extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.core.animation.timing.evaluators.EvaluatorByte evaluatorByte1;
     private javax.swing.JPanel mainPanel;
     private com.component.Menu menu;
     private com.swing.PanelBorder panelBorder1;
