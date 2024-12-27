@@ -3,15 +3,66 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package UI;
+import static UI.DatabaseConnect.getJDBCConnection;
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.*;
 
-/**
- *
- * @author ACER
- */
+class CTBan {
+
+    private String maSach;
+    private String tenSach;
+    private int soLuong;
+    private double giaban;
+
+    private String theloai;
+    
+    public CTBan(String maSach, String tenSach, int soLuong, double giaban,  String theloai) {
+        this.maSach = maSach;
+        this.tenSach = tenSach;
+        this.soLuong = soLuong;
+        this.giaban = giaban;
+        this.theloai = theloai;
+    }
+
+    public String getMaSach() {
+        return maSach;
+    }
+
+    public String getTenSach() {
+        return tenSach;
+    }
+
+    public int getSoLuong() {
+        return soLuong;
+    }
+
+    public double getGia() {
+        return giaban;
+    }
+
+    public String getTheloai() {
+        return theloai;
+    }
+}
+
+
 public class BanSach extends javax.swing.JPanel {
+    Connection conn = getJDBCConnection();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    java.util.List<CTBan> danhsachsanpham = new ArrayList<>();
+    java.util.List<CTBan> chitiethoadon = new ArrayList<>();
     private int mode = 0; //0 - chế độ lập phiếu, 1- chế độ tra cứu
     /**
      * Creates new form BanSach
@@ -22,10 +73,11 @@ public class BanSach extends javax.swing.JPanel {
         setTable1Header();
         setTable2Header();
         loadTable1();
+        loadTable2("");
         setMode(0);
     }
     private void setMode(int x){
-        if(x==0){
+        if(x==0){   //thêm hóa đơn
             ThemSP.setVisible(true);
             XoaSP.setVisible(true);
             InHoaDon.setVisible(true);
@@ -33,7 +85,11 @@ public class BanSach extends javax.swing.JPanel {
             Tim.setVisible(true);
             TraCuuPanel.setVisible(true);
             KTTC.setVisible(false);
-        } else{
+            hoTen.setFocusable(true);
+            NLHD.setFocusable(true);
+            TienTraField.setFocusable(true);
+            jTable1.setFocusable(true);
+        } else{ // đang tra cứu
             ThemSP.setVisible(false);
             XoaSP.setVisible(false);
             InHoaDon.setVisible(false);
@@ -41,6 +97,10 @@ public class BanSach extends javax.swing.JPanel {
             Tim.setVisible(false);
             TraCuuPanel.setVisible(false);
             KTTC.setVisible(true);
+            hoTen.setFocusable(false);
+            NLHD.setFocusable(false);
+            TienTraField.setFocusable(false);
+            jTable1.setFocusable(false);
         }
         mode = x;
     }
@@ -74,18 +134,35 @@ public class BanSach extends javax.swing.JPanel {
     }
     private void loadTable1(){
         // create jTable1 columns
-        DefaultTableModel model = new DefaultTableModel();        
-        String tieude[] = new String[]{ "STT", "Sách","Thể loại", "Số lượng", "Đơn giá bán"};
+        DefaultTableModel model = new DefaultTableModel(){
+            //không cho chỉnh sửa trong bảng
+            @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+        };       
+        String tieude[] = new String[]{ "STT", "Tên sách","Thể loại", "Số lượng", "Đơn giá bán"};
         model.setColumnIdentifiers(tieude);
-        // add data
-        // mẫu để test
-        model.addRow(new Object[]{"1","Đắc Nhân Tâm", "Tâm lý", "1", "50000"});
-        model.addRow(new Object[]{"2","Tôi thấy hoa vàng trên cỏ xanh", "Tiểu thuyết", "1", "50000"});
-        
-        
-        
-        
+        if(mode==0){ // thêm hóa đơn    
+            int i = 1 ;
+            for(CTBan sach : danhsachsanpham){
+                model.addRow(new Object[]{i, sach.getTenSach(), sach.getTheloai(), sach.getSoLuong() ,sach.getGia()});
+                i++;
+            }
+        }
+        else{
+            int i = 1 ;
+            for(CTBan sach : chitiethoadon){
+                model.addRow(new Object[]{i, sach.getTenSach(), sach.getTheloai(), sach.getSoLuong() ,sach.getGia()});
+                i++;
+            }        
+        }
+        double tongtien = 0;
+        for(int i = 0 ;i< model.getRowCount();i++){
+            tongtien += (Integer.parseInt(model.getValueAt(i, 3).toString())*Double.parseDouble(model.getValueAt(i, 4).toString()));
+        }
         jTable1.setModel(model);
+        TongTienField.setText(Double.toString(tongtien));
         // set columns width
         jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(30);
@@ -94,7 +171,7 @@ public class BanSach extends javax.swing.JPanel {
         jTable1.getColumnModel().getColumn(3).setPreferredWidth(50);
         jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);     
     }
-    private void loadTable2(){
+    private void loadTable2(String maHD){  //danh sách các hóa đơn
         // create jTable1 columns
         DefaultTableModel model = new DefaultTableModel(){           
         @Override
@@ -102,20 +179,30 @@ public class BanSach extends javax.swing.JPanel {
             return false; // Không cho phép chỉnh sửa các ô
         }       
         };        
-        String tieude[] = new String[]{ "STT", "Họ tên khách hàng","Ngày lập hóa đơn", "Chi tiết hóa đơn"};
+        String tieude[] = new String[]{ "STT", "Mã hóa đơn","Họ tên khách hàng","Ngày lập hóa đơn", "Chi tiết hóa đơn"};
         model.setColumnIdentifiers(tieude);
-        // add data
-        // mẫu để test        
-        model.addRow(new Object[]{"1","Nguyễn Đăng Hương Uyên", "11/10/2024", "Xem"});
-        
-        
-        jTable2.setModel(model);
-        // set columns width
-        jTable2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        jTable2.getColumnModel().getColumn(0).setPreferredWidth(30);
-        jTable2.getColumnModel().getColumn(1).setPreferredWidth(300);
-        jTable2.getColumnModel().getColumn(2).setPreferredWidth(100);
-        jTable2.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);     
+        String sql = "SELECT MAHD,TENKH,NGAYLAPHD FROM hoadon JOIN khachhang ON hoadon.MAKH = khachhang.MAKH WHERE MAHD = ?";
+        if("".equals(maHD)) {
+            sql = "SELECT MAHD,TENKH,NGAYLAPHD FROM hoadon JOIN khachhang ON hoadon.MAKH = khachhang.MAKH";
+        }
+        try {
+            ps = conn.prepareStatement(sql);
+            if(!"".equals(maHD)) ps.setString(1, maHD);
+            rs = ps.executeQuery();
+            if(!rs.isBeforeFirst() ) {
+                JOptionPane.showMessageDialog(BanSach.this, "Không có kết quả");
+                return;
+            }
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            int i = 1;
+            while(rs.next()){
+                model.addRow(new Object[]{i, rs.getString("MAHD") ,rs.getString("TENKH"), sdf.format(rs.getDate("NGAYLAPHD")), "Bấm đúp để xem"});
+                i++;
+            }
+            jTable2.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
+        }   
     }
 
     /**
@@ -131,8 +218,10 @@ public class BanSach extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         ThemButton = new javax.swing.JButton();
-        TenSachField = new javax.swing.JTextField();
-        SoLuongField = new javax.swing.JTextField();
+        TS = new javax.swing.JTextField();
+        SL = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        TL = new javax.swing.JTextField();
         panelBorder1 = new com.swing.PanelBorder();
         background1 = new com.component.Background();
         TitlePanel = new com.swing.PanelBorder();
@@ -159,12 +248,16 @@ public class BanSach extends javax.swing.JPanel {
         KTTC = new javax.swing.JButton();
 
         ThemDialog.setLocation(new java.awt.Point(600, 200));
-        ThemDialog.setPreferredSize(new java.awt.Dimension(400, 200));
-        ThemDialog.setSize(new java.awt.Dimension(400, 200));
+        ThemDialog.setMinimumSize(new java.awt.Dimension(400, 239));
+        ThemDialog.setSize(new java.awt.Dimension(400, 239));
+        ThemDialog.setType(java.awt.Window.Type.POPUP);
+        ThemDialog.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setText("Nhập tên sách:");
+        jLabel1.setText("Tên sách:");
+        ThemDialog.getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(31, 42, -1, -1));
 
         jLabel2.setText("Số lượng:");
+        ThemDialog.getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(31, 118, -1, -1));
 
         ThemButton.setText("Thêm");
         ThemButton.addActionListener(new java.awt.event.ActionListener() {
@@ -172,46 +265,15 @@ public class BanSach extends javax.swing.JPanel {
                 ThemButtonActionPerformed(evt);
             }
         });
+        ThemDialog.getContentPane().add(ThemButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 170, -1, -1));
+        ThemDialog.getContentPane().add(TS, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 39, 235, -1));
+        ThemDialog.getContentPane().add(SL, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 115, 235, -1));
 
-        javax.swing.GroupLayout ThemDialogLayout = new javax.swing.GroupLayout(ThemDialog.getContentPane());
-        ThemDialog.getContentPane().setLayout(ThemDialogLayout);
-        ThemDialogLayout.setHorizontalGroup(
-            ThemDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ThemDialogLayout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addGroup(ThemDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(ThemDialogLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(SoLuongField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(ThemDialogLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(35, 35, 35)
-                        .addComponent(TenSachField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(79, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ThemDialogLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(ThemButton)
-                .addGap(161, 161, 161))
-        );
-        ThemDialogLayout.setVerticalGroup(
-            ThemDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ThemDialogLayout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addGroup(ThemDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(TenSachField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(ThemDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(SoLuongField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
-                .addComponent(ThemButton)
-                .addGap(34, 34, 34))
-        );
+        jLabel3.setText("Thể loại:");
+        ThemDialog.getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(31, 78, -1, -1));
+        ThemDialog.getContentPane().add(TL, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 75, 235, -1));
 
         setBackground(new java.awt.Color(205, 241, 255));
-        setPreferredSize(new java.awt.Dimension(850, 700));
 
         TitlePanel.setBackground(new java.awt.Color(0, 88, 128));
         TitlePanel.setPreferredSize(new java.awt.Dimension(144, 34));
@@ -259,7 +321,7 @@ public class BanSach extends javax.swing.JPanel {
         NLHD.setBackground(new java.awt.Color(176, 231, 254));
         NLHD.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         NLHD.setForeground(new java.awt.Color(0, 49, 64));
-        NLHD.setText("Ngày lập hóa đơn");
+        NLHD.setText("Số điện thoại khách hàng");
         NLHD.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 88, 128)));
         NLHD.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -315,7 +377,6 @@ public class BanSach extends javax.swing.JPanel {
         ConLai.setForeground(new java.awt.Color(255, 255, 255));
         ConLai.setText("Còn lại:");
 
-        TongTienField.setEditable(false);
         TongTienField.setBackground(new java.awt.Color(0, 88, 128));
         TongTienField.setForeground(new java.awt.Color(255, 255, 255));
         TongTienField.setBorder(null);
@@ -327,6 +388,11 @@ public class BanSach extends javax.swing.JPanel {
         TienTraField.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(255, 255, 255)));
         TienTraField.setSelectedTextColor(new java.awt.Color(0, 88, 128));
         TienTraField.setSelectionColor(new java.awt.Color(255, 255, 255));
+        TienTraField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TienTraFieldActionPerformed(evt);
+            }
+        });
 
         ConLaiField.setEditable(false);
         ConLaiField.setBackground(new java.awt.Color(0, 88, 128));
@@ -489,7 +555,7 @@ public class BanSach extends javax.swing.JPanel {
         TraCuu.setBackground(new java.awt.Color(82, 199, 253));
         TraCuu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         TraCuu.setForeground(new java.awt.Color(0, 49, 64));
-        TraCuu.setText("Nhập thông tin hóa đơn cần tra cứu");
+        TraCuu.setText("Nhập mã hóa đơn cần tra cứu");
         TraCuu.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 88, 128)));
         TraCuu.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -606,126 +672,377 @@ public class BanSach extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_hoTenFocusGained
     private void NLHDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_NLHDFocusGained
-        if("Ngày lập hóa đơn".equals(NLHD.getText())){
+        if("Số điện thoại khách hàng".equals(NLHD.getText())){
             NLHD.setText("");
         }
     }//GEN-LAST:event_NLHDFocusGained
     private void NLHDFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_NLHDFocusLost
         if("".equals(NLHD.getText())){
-            NLHD.setText("Ngày lập hóa đơn");
+            NLHD.setText("Số điện thoại khách hàng");
         }
     }//GEN-LAST:event_NLHDFocusLost
     private void ThemSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemSPActionPerformed
         ThemDialog.setVisible(true);
     }//GEN-LAST:event_ThemSPActionPerformed
-
+    private double getTLGB(){
+        String sql = "SELECT TILETINHGIABAN FROM THAMSO";
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while(rs.next())
+            return rs.getDouble("TILETINHGIABAN");
+        } catch (SQLException ex) {
+            Logger.getLogger(NhapSach.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+        return -1;
+    }
+    private int getSLTTTSB(){
+        String sql = "SELECT SOLUONGTONTOITHIEUSAUBAN FROM THAMSO";
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while(rs.next())
+            return rs.getInt("SOLUONGTONTOITHIEUSAUBAN");
+        } catch (SQLException ex) {
+            Logger.getLogger(NhapSach.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+        return -1;
+    }
+    private void addToDSSP(String ts, String tl, String sl) {
+        String sql = "SELECT MASACH,SLTON,DONGIANHAP FROM SACH JOIN DAUSACH ON SACH.MADAUSACH = DAUSACH.MADAUSACH JOIN THELOAI ON DAUSACH.MATHELOAI = THELOAI.MATHELOAI WHERE TENDAUSACH = ? AND TENTHELOAI = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,ts);
+            ps.setString(2,tl);
+            rs = ps.executeQuery();
+            if(!rs.next()){
+                JOptionPane.showMessageDialog(BanSach.this, "Không tìm thấy sản phẩm");
+                return;
+            }
+            String masach = rs.getString("MASACH");
+            double gianhap = rs.getDouble("DONGIANHAP");
+            System.out.println("Ma sach: "+masach);
+            int slton = rs.getInt("SLTon");
+            int sltttsb = getSLTTTSB();
+            if(slton-Integer.parseInt(sl) < sltttsb){
+                JOptionPane.showMessageDialog(BanSach.this, "Số lượng tồn phải lớn hơn số lượng tối thiểu tồn tối thiểu");
+                return;
+            }                
+            double tlgb = getTLGB();
+            if(tlgb==-1){
+                JOptionPane.showMessageDialog(BanSach.this, "Đã xảy ra lỗi");
+                return;
+            }
+            danhsachsanpham.add(new CTBan(masach,ts,Integer.parseInt(sl),(gianhap*tlgb),tl));
+            loadTable1();
+        } catch (SQLException ex) {
+            Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     private void ThemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemButtonActionPerformed
-        TenSachField.setText("");
-        SoLuongField.setText("");
-        ThemDialog.setVisible(false);
-        
-        
-        
-        
-        
+        if(Integer.parseInt(SL.getText())<1){
+            JOptionPane.showMessageDialog(BanSach.this, "Số lượng phải lớn hơn 0");
+            return;
+        }
+        addToDSSP(TS.getText(),TL.getText(),SL.getText());
+        TS.setText("");
+        TL.setText("");
+        SL.setText("");
+        ThemDialog.setVisible(false);       
     }//GEN-LAST:event_ThemButtonActionPerformed
 
     private void XoaSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_XoaSPActionPerformed
-        
-        
-        
-        
-        
+        int rowNo = jTable1.getSelectedRow();
+        if(rowNo<0){
+            return;
+        }
+        danhsachsanpham.remove(rowNo);
+        loadTable1();      
     }//GEN-LAST:event_XoaSPActionPerformed
-
+    private String getMaKH(String hoten, String sdt){
+        String sql = "SELECT MAKH FROM KHACHHANG WHERE tenkh = ? AND SODT = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, hoten);
+            ps.setString(2, sdt);
+            rs = ps.executeQuery();
+            if(rs.next()) 
+            return rs.getString("MAKH");
+            //khong tim thay makh
+            
+        sql = "SELECT * FROM KHACHHANG";
+        ps = conn.prepareStatement(sql);
+        rs = ps.executeQuery();
+        int rowCount = 0;
+            while (rs.next()) {
+                rowCount++;
+            }
+        String maKH = "KH"+rowCount;
+        // insert khachhang
+        sql = "INSERT INTO khachhang (MAKH, TENKH,SODT,TONGNO) VALUES (?,?,?,0)";
+        ps = conn.prepareStatement(sql);
+        ps.setString(1, maKH);
+        ps.setString(2, hoten);
+        ps.setString(3, sdt);
+        ps.executeUpdate();
+        return maKH;
+        } catch (SQLException ex) {
+            Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    private double getSNTD(){
+        String sql = "SELECT SONOTOIDA FROM THAMSO";
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while(rs.next())
+            return rs.getDouble("SONOTOIDA");
+        } catch (SQLException ex) {
+            Logger.getLogger(NhapSach.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+        return -1;
+    }
+    private double getTongNo(String maKH){
+        String sql = "SELECT TONGNO FROM KHACHHANG WHERE MAKH = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,maKH);
+            rs = ps.executeQuery();
+            if (rs.next()) return rs.getDouble("TONGNO");
+        } catch (SQLException ex) {
+            Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;        
+    }
+    private String getLastestMHD(){
+        String sql = "SELECT * FROM HOADON";
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            int rowCount = 0;
+            while (rs.next()) {
+                rowCount++;
+            }
+            String mhd = "HD"+rowCount;
+            return mhd;
+        } catch (SQLException ex) {
+            Logger.getLogger(NhapSach.class.getName()).log(Level.SEVERE, null, ex);
+        }        
+        return "";
+    }
+    private void createHD(String maHD, String maKH, double tongtien, double tientra, double conlai){
+        String sql = "INSERT INTO hoadon (MAHD, MAKH, NGAYLAPHD, TONGTIEN, DATRA, CONLAI) VALUES (?,?,?,?,?,?)";
+        LocalDate today = LocalDate.now();
+        Date nn = Date.valueOf(today);
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, maHD);
+            ps.setString(2, maKH);
+            ps.setDate(3, nn);
+            ps.setDouble(4, tongtien);
+            ps.setDouble(5, tientra);
+            ps.setDouble(6, conlai);            
+            int result = ps.executeUpdate();
+            if(result == 1){
+                JOptionPane.showMessageDialog(BanSach.this, "Thêm phiếu nhập sách thành công");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(NhapSach.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private void updateCTHD(String maHD){
+        String sql = "INSERT INTO CHITIETHOADON (MAHD, MASACH, SLBAN, ThanhTien) VALUES (?,?,?,?)";
+        try {
+            ps = conn.prepareStatement(sql);
+            for(CTBan sach : danhsachsanpham){
+                ps.setString(1, maHD);
+                ps.setString(2, sach.getMaSach());
+                ps.setInt(3, sach.getSoLuong());
+                ps.setDouble(4, sach.getGia());
+                ps.executeUpdate();            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private void updateSach(){
+        String sql = "UPDATE sach SET SLTON = SLTON-? WHERE MASACH = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            for(CTBan sach : danhsachsanpham){
+                ps.setInt(1, sach.getSoLuong());
+                ps.setString(2, sach.getMaSach());
+                ps.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(NhapSach.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private void updateTongNoKH(String maKH, double conlai){
+        String sql = "UPDATE khachhang SET TONGNO = TONGNO-? WHERE MAKH = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            
+                ps.setDouble(1, conlai);
+                ps.setString(2, maKH);
+                ps.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(NhapSach.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     private void InHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InHoaDonActionPerformed
-
-        
-        
-        
+        if(hoTen.getText().equals("Họ tên khách hàng")||NLHD.getText().equals("Số điện thoại khách hàng")||TienTraField.getText().isBlank()||danhsachsanpham.isEmpty()||ConLaiField.getText().isBlank()){
+            JOptionPane.showMessageDialog(BanSach.this, "Vui lòng nhập đầy đủ thông tin");
+            return;
+        }
+        String hoten = hoTen.getText();
+        String sdt  = NLHD.getText();
+        String maKH = getMaKH(hoten,sdt);
+        System.out.println("maKH:"+maKH);
+        double sntd = getSNTD(); //số nợ tối đa
+        double tongno = getTongNo(maKH);
+        double conlai = Double.parseDouble(ConLaiField.getText());
+        if(conlai < 0 && tongno-conlai > sntd){
+            JOptionPane.showMessageDialog(BanSach.this, "Khách hàng không được nợ quá số nợ tối đa");
+            return;
+        }
+        double tongtien  = Double.parseDouble(TongTienField.getText());
+        double tientra = Double.parseDouble(TienTraField.getText());
+        String mahd = getLastestMHD();
+        createHD(mahd, maKH, tongtien, tientra, conlai);
+        updateCTHD(mahd);
+        updateSach();
+        if (conlai<0) updateTongNoKH(maKH,conlai);
+        danhsachsanpham.clear();
+        TongTienField.setText("");
+        TienTraField.setText("");
+        ConLaiField.setText("");
+        hoTen.setText("");
+        NLHD.setText("");
+        loadTable2("");
     }//GEN-LAST:event_InHoaDonActionPerformed
 
     private void TraCuuFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TraCuuFocusGained
-        if("Nhập thông tin hóa đơn cần tra cứu".equals(TraCuu.getText())){
+        if("Nhập mã hóa đơn cần tra cứu".equals(TraCuu.getText())){
             TraCuu.setText("");
         }
     }//GEN-LAST:event_TraCuuFocusGained
     private void TraCuuFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TraCuuFocusLost
         if("".equals(TraCuu.getText())){
-            TraCuu.setText("Nhập thông tin hóa đơn cần tra cứu");
+            TraCuu.setText("Nhập mã hóa đơn cần tra cứu");
         }
     }//GEN-LAST:event_TraCuuFocusLost
     private void TimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TimActionPerformed
-        TraCuu.setText("Nhập thông tin hóa đơn cần tra cứu");
-        
-        
-        
-        
-        
-        loadTable2();
+        String maHD = TraCuu.getText();
+        if ("Nhập mã hóa đơn cần tra cứu".equals(maHD)){
+            JOptionPane.showMessageDialog(BanSach.this, "Vui lòng nhập mã hóa đơn");
+            return;
+        }
+        TraCuu.setText("Nhập mã hóa đơn cần tra cứu");
+        loadTable2(maHD);
     }//GEN-LAST:event_TimActionPerformed
-
+    private void getGeneral(String mahd){
+        String sql  = "SELECT * FROM HOADON JOIN KHACHHANG ON HOADON.MAKH = KHACHHANG.MAKH WHERE MAHD = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, mahd);
+            rs = ps.executeQuery();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            if(rs.next()){
+                hoTen.setText(rs.getString("TENKH"));
+                NLHD.setText(sdf.format(rs.getDate("NGAYLAPHD")));
+                TienTraField.setText(Double.toString(rs.getDouble("DATRA")));
+                ConLaiField.setText(Double.toString(rs.getDouble("CONLAI")));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private void getDetail(String mahd){
+        String sql = "SELECT * FROM CHITIETHOADON JOIN SACH ON CHITIETHOADON.MASACH = SACH.MASACH JOIN DAUSACH ON DAUSACH.MADAUSACH = SACH.MADAUSACH JOIN THELOAI ON THELOAI.MATHELOAI = DAUSACH.MATHELOAI WHERE MAHD = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, mahd);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                chitiethoadon.add(new CTBan(rs.getString("MASACH"),rs.getString("TENDAUSACH"),rs.getInt("SLBAN"),rs.getDouble("THANHTIEN"),rs.getString("TENTHELOAI")));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
         if(evt.getClickCount()==2){ //bấm đúp chuột
-            if(jTable2.getSelectedColumn()==3 ){ // cột CTHD
+            if(jTable2.getSelectedColumn()==4 ){ // cột CTHD
+                if(!danhsachsanpham.isEmpty()){
+                    JOptionPane.showMessageDialog(BanSach.this, "Vui lòng hoàn tất hóa đơn đang ghi");
+                    return;
+                }
                 setMode(1);
+                danhsachsanpham.clear();
             }
-            
-            
-            
-            
-            
-            
+            String maHD = jTable2.getValueAt(jTable2.getSelectedRow(), 1).toString();
+            getGeneral(maHD); // chỉnh tên KH, ngày, tổng tiền, tiền trả, còn lại
+            getDetail(maHD); //chỉnh danh sách hàng trong hóa đơn
+            loadTable1();        
         }
     }//GEN-LAST:event_jTable2MouseClicked
 
     private void KTTCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KTTCActionPerformed
         setMode(0);
+        hoTen.setText("");
+        NLHD.setText("");
+        TongTienField.setText("");
+        TienTraField.setText("");
+        ConLaiField.setText("");
+        chitiethoadon.clear();
+        loadTable1();
+        loadTable2("");
     }//GEN-LAST:event_KTTCActionPerformed
+
+    private void TienTraFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TienTraFieldActionPerformed
+        double tongtien  = Double.parseDouble(TongTienField.getText());
+        double tientra = Double.parseDouble(TienTraField.getText());
+        double conlai = tientra-tongtien;
+        ConLaiField.setText(String.valueOf(conlai));
+    }//GEN-LAST:event_TienTraFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ConLai;
-    private javax.swing.JLabel ConLai1;
     private javax.swing.JTextField ConLaiField;
-    private javax.swing.JTextField ConLaiField1;
     private javax.swing.JButton InHoaDon;
-    private javax.swing.JButton InHoaDon1;
     private javax.swing.JButton KTTC;
     private javax.swing.JTextField NLHD;
-    private javax.swing.JTextField SoLuongField;
-    private javax.swing.JTextField TenSachField;
+    private javax.swing.JTextField SL;
+    private javax.swing.JTextField TL;
+    private javax.swing.JTextField TS;
     private javax.swing.JButton ThemButton;
     private javax.swing.JDialog ThemDialog;
     private javax.swing.JButton ThemSP;
-    private javax.swing.JButton ThemSP1;
     private javax.swing.JLabel TienTra;
-    private javax.swing.JLabel TienTra1;
     private javax.swing.JTextField TienTraField;
-    private javax.swing.JTextField TienTraField1;
     private javax.swing.JButton Tim;
     private com.swing.PanelBorder TitlePanel;
     private javax.swing.JLabel TongTien;
-    private javax.swing.JLabel TongTien1;
     private javax.swing.JTextField TongTienField;
-    private javax.swing.JTextField TongTienField1;
     private javax.swing.JTextField TraCuu;
     private com.swing.PanelBorder TraCuuPanel;
     private javax.swing.JButton XoaSP;
-    private javax.swing.JButton XoaSP1;
     private com.component.Background background1;
     private javax.swing.JTextField hoTen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
     private com.swing.PanelBorder panelBorder1;
     private com.swing.PanelBorder tablePanel;
-    private com.swing.PanelBorder tablePanel1;
     private javax.swing.JLabel title;
     // End of variables declaration//GEN-END:variables
+
+    
 }

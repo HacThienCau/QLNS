@@ -40,25 +40,27 @@
                   <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="hoTen" min="-2" pref="306" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="diaChi" min="-2" pref="306" max="-2" attributes="0"/>
+                          <Component id="hoTen" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="88" max="-2" attributes="0"/>
+                          <Component id="diaChi" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="soDT" alignment="0" min="-2" pref="306" max="-2" attributes="0"/>
-                              <Component id="maKH" alignment="0" min="-2" pref="306" max="-2" attributes="0"/>
+                              <Component id="soDT" alignment="0" max="32767" attributes="0"/>
+                              <Component id="maKH" alignment="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="88" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="tongNo" min="-2" pref="306" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="Them" min="-2" pref="100" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="Xoa" min="-2" pref="100" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="Sua" min="-2" pref="100" max="-2" attributes="0"/>
+                                  <Component id="tongNo" max="32767" attributes="0"/>
+                                  <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="106" max="-2" attributes="0"/>
+                                  <Component id="Xoa" max="32767" attributes="0"/>
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Component id="Sua" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -68,10 +70,13 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="panelBorder1" min="-2" max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" min="-2" pref="790" max="-2" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="panelBorder1" max="32767" attributes="0"/>
+                          <EmptySpace min="490" pref="490" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="jScrollPane1" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="34" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -79,27 +84,32 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
-                  <Component id="panelBorder1" min="-2" max="-2" attributes="0"/>
+                  <Component id="panelBorder1" max="32767" attributes="0"/>
                   <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="hoTen" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="diaChi" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                      <Component id="hoTen" alignment="3" max="32767" attributes="0"/>
+                      <Component id="diaChi" alignment="3" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="soDT" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="tongNo" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                      <Component id="soDT" alignment="3" max="32767" attributes="0"/>
+                      <Component id="tongNo" alignment="3" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="maKH" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="Them" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="Xoa" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="Sua" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="maKH" alignment="3" max="32767" attributes="0"/>
+                      <Group type="102" alignment="3" attributes="0">
+                          <EmptySpace min="9" pref="9" max="-2" attributes="0"/>
+                          <Component id="Xoa" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="3" attributes="0">
+                          <EmptySpace min="9" pref="9" max="-2" attributes="0"/>
+                          <Component id="Sua" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" min="-2" pref="335" max="-2" attributes="0"/>
-                  <EmptySpace pref="17" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="371" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -115,7 +125,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel1" alignment="1" pref="300" max="32767" attributes="0"/>
+                  <Component id="jLabel1" alignment="1" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -268,27 +278,6 @@
             </Property>
             <Property name="focusable" type="boolean" value="false"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="Them">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="18" style="1"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="80" green="58" red="0" type="rgb"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Th&#xea;m"/>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                <LineBorder roundedCorners="true" thickness="3">
-                  <Color PropertyName="color" blue="80" green="58" red="0" type="rgb"/>
-                </LineBorder>
-              </Border>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ThemActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="Xoa">
           <Properties>

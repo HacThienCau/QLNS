@@ -4,6 +4,8 @@
  */
 package UI;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author ACER
@@ -28,37 +30,39 @@ public class Login extends javax.swing.JPanel {
 
         kGradientPanel2 = new com.k33ptoo.components.KGradientPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        rSMaterialButtonRectangle2 = new rojerusan.RSMaterialButtonRectangle();
+        Blogin = new rojerusan.RSMaterialButtonRectangle();
         rSMaterialButtonRectangle3 = new rojerusan.RSMaterialButtonRectangle();
+        User = new javax.swing.JTextField();
+        Password = new javax.swing.JPasswordField();
 
         kGradientPanel2.setkEndColor(new java.awt.Color(0, 171, 253));
         kGradientPanel2.setkStartColor(new java.awt.Color(205, 241, 255));
-
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("MẬT KHẨU");
-        jLabel2.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(255, 255, 255)));
+        kGradientPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        kGradientPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 93, 37, -1));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_Secure_50px.png"))); // NOI18N
         jLabel3.setText("jLabel3");
-
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("TÊN TÀI KHOẢN");
-        jLabel4.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(255, 255, 255)));
+        kGradientPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 150, 50, 50));
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8_Account_50px.png"))); // NOI18N
         jLabel5.setText("jLabel3");
+        kGradientPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, 50, -1));
 
-        rSMaterialButtonRectangle2.setText("ĐĂNG NHẬP");
-        rSMaterialButtonRectangle2.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 14)); // NOI18N
-        rSMaterialButtonRectangle2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rSMaterialButtonRectangle2ActionPerformed(evt);
+        Blogin.setText("ĐĂNG NHẬP");
+        Blogin.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 14)); // NOI18N
+        Blogin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                BloginMouseClicked(evt);
             }
         });
+        Blogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BloginActionPerformed(evt);
+            }
+        });
+        kGradientPanel2.add(Blogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 220, 133, 48));
 
         rSMaterialButtonRectangle3.setText("ĐĂNG NHẬP");
         rSMaterialButtonRectangle3.setFont(new java.awt.Font("Montserrat ExtraBold", 0, 14)); // NOI18N
@@ -67,63 +71,49 @@ public class Login extends javax.swing.JPanel {
                 rSMaterialButtonRectangle3ActionPerformed(evt);
             }
         });
+        kGradientPanel2.add(rSMaterialButtonRectangle3, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, 129, 38));
 
-        javax.swing.GroupLayout kGradientPanel2Layout = new javax.swing.GroupLayout(kGradientPanel2);
-        kGradientPanel2.setLayout(kGradientPanel2Layout);
-        kGradientPanel2Layout.setHorizontalGroup(
-            kGradientPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(kGradientPanel2Layout.createSequentialGroup()
-                .addGroup(kGradientPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(kGradientPanel2Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(rSMaterialButtonRectangle3, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(kGradientPanel2Layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(7, 7, 7)
-                        .addGroup(kGradientPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(kGradientPanel2Layout.createSequentialGroup()
-                                .addGap(196, 196, 196)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(kGradientPanel2Layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(7, 7, 7)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(kGradientPanel2Layout.createSequentialGroup()
-                        .addGap(160, 160, 160)
-                        .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(97, Short.MAX_VALUE))
-        );
-        kGradientPanel2Layout.setVerticalGroup(
-            kGradientPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(kGradientPanel2Layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(rSMaterialButtonRectangle3, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
-                .addGroup(kGradientPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(kGradientPanel2Layout.createSequentialGroup()
-                        .addGap(13, 13, 13)
-                        .addComponent(jLabel1)))
-                .addGap(20, 20, 20)
-                .addGroup(kGradientPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(20, 20, 20)
-                .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
-        );
+        User.setBackground(new java.awt.Color(176, 231, 254));
+        User.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        User.setForeground(new java.awt.Color(0, 49, 64));
+        User.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        User.setToolTipText("");
+        User.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 0, new java.awt.Color(0, 88, 128)));
+        User.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        User.setName(""); // NOI18N
+        User.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                UserFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                UserFocusLost(evt);
+            }
+        });
+        User.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UserActionPerformed(evt);
+            }
+        });
+        kGradientPanel2.add(User, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, 230, 50));
+        User.getAccessibleContext().setAccessibleName("");
+
+        Password.setBackground(new java.awt.Color(176, 231, 254));
+        Password.setToolTipText("");
+        Password.setBorder(null);
+        Password.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PasswordActionPerformed(evt);
+            }
+        });
+        kGradientPanel2.add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 150, 230, 50));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 460, Short.MAX_VALUE)
+            .addGap(0, 466, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(kGradientPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(kGradientPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -133,23 +123,48 @@ public class Login extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void rSMaterialButtonRectangle2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonRectangle2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rSMaterialButtonRectangle2ActionPerformed
+    private void BloginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BloginActionPerformed
+        if (User.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập tên đăng nhập");
+        }
+        else if(Password.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập mật khẩu");
+        }
+    }//GEN-LAST:event_BloginActionPerformed
 
     private void rSMaterialButtonRectangle3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonRectangle3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_rSMaterialButtonRectangle3ActionPerformed
 
+    private void BloginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BloginMouseClicked
+      // TODO add your handling code here:
+    }//GEN-LAST:event_BloginMouseClicked
+
+    private void UserFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_UserFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_UserFocusGained
+
+    private void UserFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_UserFocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_UserFocusLost
+
+    private void UserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_UserActionPerformed
+
+    private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PasswordActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private rojerusan.RSMaterialButtonRectangle Blogin;
+    private javax.swing.JPasswordField Password;
+    private javax.swing.JTextField User;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private com.k33ptoo.components.KGradientPanel kGradientPanel2;
-    private rojerusan.RSMaterialButtonRectangle rSMaterialButtonRectangle2;
     private rojerusan.RSMaterialButtonRectangle rSMaterialButtonRectangle3;
     // End of variables declaration//GEN-END:variables
 }
