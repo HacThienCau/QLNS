@@ -33,10 +33,11 @@ public class Menu extends javax.swing.JPanel {
         listMenu1.addItem(new Model_Menu("NhapSach", "Nhập sách", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("BanSach", "Bán Sách", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("TraCuu", "Tra Cứu", Model_Menu.MenuType.MENU));
+        listMenu1.addItem(new Model_Menu("QLKH", "Quản lý khách hàng", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("ThuTien", "Thu Tiền", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("BaoCao", "Báo Cáo", Model_Menu.MenuType.MENU));
         listMenu1.addItem(new Model_Menu("TDQD", "Thay Đổi Quy Định", Model_Menu.MenuType.MENU));        
-        listMenu1.addItem(new Model_Menu("Thoat", "Thoát", Model_Menu.MenuType.MENU));
+        listMenu1.addItem(new Model_Menu("Thoat", "Đăng xuất", Model_Menu.MenuType.MENU));
     }
 
     @SuppressWarnings("unchecked")

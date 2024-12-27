@@ -9,7 +9,7 @@ public class QLNS extends javax.swing.JFrame {
 
     /*
      Hướng dẫn thêm chức năng:
-     - Thêm file panel trong genshinassist
+     - Thêm file panel trong ....
      - Thêm file ảnh trong icon (png, 26x26)
      - Thêm item trong com.component.Menu , chỉnh sửa size listMenu1
      - Trong GenshinAssist.java, thêm biến private, khởi tạo giá trị, thêm nhánh selected
@@ -17,7 +17,7 @@ public class QLNS extends javax.swing.JFrame {
     private TrangChu _home; private NhapSach _nhap;
     private BanSach _ban; private TraCuu _tracuu;
     private ThuTien _thu; private BaoCao _baocao;
-    private TDQD _tdqd;
+    private TDQD _tdqd; private QLKH _qlkh ;
     public QLNS() {
         initComponents();
 
@@ -38,15 +38,18 @@ public class QLNS extends javax.swing.JFrame {
                     _tracuu = new TraCuu();
                     setForm(_tracuu);
                 }else if (index == 4){
+                    _qlkh = new QLKH();
+                    setForm(_qlkh);
+                }else if (index == 5){
                     _thu = new ThuTien();
                     setForm(_thu);
-                }else if (index == 5){
+                }else if (index == 6){
                     _baocao = new BaoCao();
                     setForm(_baocao);
-                }else if (index == 6){
+                }else if (index == 7){
                     _tdqd = new TDQD();
                     setForm(_tdqd);
-                }else if (index == 7){
+                }else if (index == 8){
                     int opt = JOptionPane.showConfirmDialog(QLNS.this, "Bạn có chắc chắn muốn thoát?", "có", JOptionPane.YES_NO_OPTION);
                     if(opt == JOptionPane.YES_OPTION){
                         System.exit(0);

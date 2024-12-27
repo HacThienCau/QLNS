@@ -43,7 +43,7 @@ public class MenuItem extends javax.swing.JPanel {
         lbIcon = new javax.swing.JLabel();
         lbName = new javax.swing.JLabel();
 
-        setPreferredSize(new java.awt.Dimension(136, 70));
+        setPreferredSize(new java.awt.Dimension(136, 50));
 
         lbIcon.setForeground(new java.awt.Color(255, 255, 255));
 
