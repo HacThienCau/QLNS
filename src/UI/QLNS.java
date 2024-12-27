@@ -3,10 +3,8 @@ import com.event.EventMenuSelected;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-/**
- *
- * @author ACER
- */
+
+
 public class QLNS extends javax.swing.JFrame {
 
     /*
@@ -68,6 +66,7 @@ public class QLNS extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        evaluatorByte1 = new org.jdesktop.core.animation.timing.evaluators.EvaluatorByte();
         panelBorder1 = new com.swing.PanelBorder();
         menu = new com.component.Menu();
         mainPanel = new javax.swing.JPanel();
@@ -75,7 +74,6 @@ public class QLNS extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocation(new java.awt.Point(250, 50));
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(1100, 700));
         setSize(new java.awt.Dimension(1100, 700));
 
         panelBorder1.setPreferredSize(new java.awt.Dimension(1100, 700));
@@ -149,6 +147,7 @@ public class QLNS extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.core.animation.timing.evaluators.EvaluatorByte evaluatorByte1;
     private javax.swing.JPanel mainPanel;
     private com.component.Menu menu;
     private com.swing.PanelBorder panelBorder1;
