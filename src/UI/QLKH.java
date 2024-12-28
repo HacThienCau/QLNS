@@ -169,6 +169,7 @@ public class QLKH extends javax.swing.JPanel {
         tongNo = new javax.swing.JTextField();
         maKH = new javax.swing.JTextField();
         Sua = new javax.swing.JButton();
+        tablePanel = new com.swing.PanelBorder();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
@@ -259,6 +260,8 @@ public class QLKH extends javax.swing.JPanel {
             }
         });
 
+        tablePanel.setBackground(new java.awt.Color(0, 88, 128));
+
         jScrollPane1.setBackground(new java.awt.Color(0, 88, 128));
         jScrollPane1.setBorder(null);
 
@@ -302,6 +305,27 @@ public class QLKH extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(jTable1);
 
+        javax.swing.GroupLayout tablePanelLayout = new javax.swing.GroupLayout(tablePanel);
+        tablePanel.setLayout(tablePanelLayout);
+        tablePanelLayout.setHorizontalGroup(
+            tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 838, Short.MAX_VALUE)
+            .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(tablePanelLayout.createSequentialGroup()
+                    .addGap(16, 16, 16)
+                    .addComponent(jScrollPane1)
+                    .addGap(17, 17, 17)))
+        );
+        tablePanelLayout.setVerticalGroup(
+            tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 355, Short.MAX_VALUE)
+            .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(tablePanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(23, Short.MAX_VALUE)))
+        );
+
         javax.swing.GroupLayout background1Layout = new javax.swing.GroupLayout(background1);
         background1.setLayout(background1Layout);
         background1Layout.setHorizontalGroup(
@@ -325,12 +349,12 @@ public class QLKH extends javax.swing.JPanel {
                 .addGap(78, 78, 78))
             .addGroup(background1Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
-                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(background1Layout.createSequentialGroup()
-                        .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 490, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
-                .addGap(34, 34, 34))
+                .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(524, Short.MAX_VALUE))
+            .addGroup(background1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         background1Layout.setVerticalGroup(
             background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -351,9 +375,9 @@ public class QLKH extends javax.swing.JPanel {
                     .addGroup(background1Layout.createSequentialGroup()
                         .addGap(9, 9, 9)
                         .addComponent(Sua, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(30, 30, 30)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(69, 69, 69))
+                .addGap(36, 36, 36)
+                .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -467,6 +491,7 @@ public class QLKH extends javax.swing.JPanel {
     private javax.swing.JTextField maKH;
     private com.swing.PanelBorder panelBorder1;
     private javax.swing.JTextField soDT;
+    private com.swing.PanelBorder tablePanel;
     private javax.swing.JTextField tongNo;
     // End of variables declaration//GEN-END:variables
 
