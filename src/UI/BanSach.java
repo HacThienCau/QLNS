@@ -222,6 +222,8 @@ public class BanSach extends javax.swing.JPanel {
         SL = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         TL = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        Nam = new javax.swing.JTextField();
         panelBorder1 = new com.swing.PanelBorder();
         background1 = new com.component.Background();
         TitlePanel = new com.swing.PanelBorder();
@@ -248,8 +250,9 @@ public class BanSach extends javax.swing.JPanel {
         KTTC = new javax.swing.JButton();
 
         ThemDialog.setLocation(new java.awt.Point(600, 200));
-        ThemDialog.setMinimumSize(new java.awt.Dimension(400, 239));
-        ThemDialog.setSize(new java.awt.Dimension(400, 239));
+        ThemDialog.setPreferredSize(new java.awt.Dimension(403, 281));
+        ThemDialog.setResizable(false);
+        ThemDialog.setSize(new java.awt.Dimension(403, 281));
         ThemDialog.setType(java.awt.Window.Type.POPUP);
         ThemDialog.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -257,7 +260,7 @@ public class BanSach extends javax.swing.JPanel {
         ThemDialog.getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(31, 42, -1, -1));
 
         jLabel2.setText("Số lượng:");
-        ThemDialog.getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(31, 118, -1, -1));
+        ThemDialog.getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, -1, -1));
 
         ThemButton.setText("Thêm");
         ThemButton.addActionListener(new java.awt.event.ActionListener() {
@@ -265,13 +268,17 @@ public class BanSach extends javax.swing.JPanel {
                 ThemButtonActionPerformed(evt);
             }
         });
-        ThemDialog.getContentPane().add(ThemButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 170, -1, -1));
-        ThemDialog.getContentPane().add(TS, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 39, 235, -1));
-        ThemDialog.getContentPane().add(SL, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 115, 235, -1));
+        ThemDialog.getContentPane().add(ThemButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 200, -1, -1));
+        ThemDialog.getContentPane().add(TS, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 39, 230, -1));
+        ThemDialog.getContentPane().add(SL, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 150, 230, -1));
 
         jLabel3.setText("Thể loại:");
         ThemDialog.getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(31, 78, -1, -1));
-        ThemDialog.getContentPane().add(TL, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 75, 235, -1));
+        ThemDialog.getContentPane().add(TL, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 75, 230, -1));
+
+        jLabel4.setText("Năm:");
+        ThemDialog.getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, -1, -1));
+        ThemDialog.getContentPane().add(Nam, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 110, 230, -1));
 
         setBackground(new java.awt.Color(205, 241, 255));
 
@@ -708,12 +715,13 @@ public class BanSach extends javax.swing.JPanel {
         }        
         return -1;
     }
-    private void addToDSSP(String ts, String tl, String sl) {
-        String sql = "SELECT MASACH,SLTON,DONGIANHAP FROM SACH JOIN DAUSACH ON SACH.MADAUSACH = DAUSACH.MADAUSACH JOIN THELOAI ON DAUSACH.MATHELOAI = THELOAI.MATHELOAI WHERE TENDAUSACH = ? AND TENTHELOAI = ?";
+    private void addToDSSP(String ts, String tl, String nam, String sl) {
+        String sql = "SELECT MASACH,SLTON,DONGIANHAP FROM SACH JOIN DAUSACH ON SACH.MADAUSACH = DAUSACH.MADAUSACH JOIN THELOAI ON DAUSACH.MATHELOAI = THELOAI.MATHELOAI WHERE TENDAUSACH = ? AND TENTHELOAI = ? AND NAMXB = ?";
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1,ts);
             ps.setString(2,tl);
+            ps.setString(3, nam);
             rs = ps.executeQuery();
             if(!rs.next()){
                 JOptionPane.showMessageDialog(BanSach.this, "Không tìm thấy sản phẩm");
@@ -744,7 +752,8 @@ public class BanSach extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(BanSach.this, "Số lượng phải lớn hơn 0");
             return;
         }
-        addToDSSP(TS.getText(),TL.getText(),SL.getText());
+        addToDSSP(TS.getText(),TL.getText(),Nam.getText(),SL.getText());
+        Nam.setText("");
         TS.setText("");
         TL.setText("");
         SL.setText("");
@@ -1015,6 +1024,7 @@ public class BanSach extends javax.swing.JPanel {
     private javax.swing.JButton InHoaDon;
     private javax.swing.JButton KTTC;
     private javax.swing.JTextField NLHD;
+    private javax.swing.JTextField Nam;
     private javax.swing.JTextField SL;
     private javax.swing.JTextField TL;
     private javax.swing.JTextField TS;
@@ -1035,6 +1045,7 @@ public class BanSach extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
