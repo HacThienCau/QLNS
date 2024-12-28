@@ -162,6 +162,17 @@ public class BanSach extends javax.swing.JPanel {
             tongtien += (Integer.parseInt(model.getValueAt(i, 3).toString())*Double.parseDouble(model.getValueAt(i, 4).toString()));
         }
         jTable1.setModel(model);
+        // Tạo một DefaultTableCellRenderer và thiết lập căn giữa
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            
+            // Áp dụng renderer cho từng cột
+            for (int i = 0; i < jTable1.getColumnCount(); i++) {
+                jTable1.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            }
+            
+            // Căn giữa tiêu đề cột (Optional)
+            ((DefaultTableCellRenderer)jTable1.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
         TongTienField.setText(Double.toString(tongtien));
         // set columns width
         jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -194,12 +205,23 @@ public class BanSach extends javax.swing.JPanel {
                 return;
             }
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            int i = 1;
+            int j = 1;
             while(rs.next()){
-                model.addRow(new Object[]{i, rs.getString("MAHD") ,rs.getString("TENKH"), sdf.format(rs.getDate("NGAYLAPHD")), "Bấm đúp để xem"});
-                i++;
+                model.addRow(new Object[]{j, rs.getString("MAHD") ,rs.getString("TENKH"), sdf.format(rs.getDate("NGAYLAPHD")), "Bấm đúp để xem"});
+                j++;
             }
             jTable2.setModel(model);
+            // Tạo một DefaultTableCellRenderer và thiết lập căn giữa
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            
+            // Áp dụng renderer cho từng cột
+            for (int i = 0; i < jTable2.getColumnCount(); i++) {
+                jTable2.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            }
+            
+            // Căn giữa tiêu đề cột (Optional)
+            ((DefaultTableCellRenderer)jTable2.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
         } catch (SQLException ex) {
             Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
         }   
