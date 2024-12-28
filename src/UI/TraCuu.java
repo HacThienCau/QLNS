@@ -6,6 +6,9 @@ package UI;
 
 
 import static UI.DatabaseConnect.getJDBCConnection;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -16,6 +19,8 @@ import java.sql.*;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static javax.swing.SwingConstants.CENTER;
+import javax.swing.table.DefaultTableCellRenderer;
 
 
 public class TraCuu extends javax.swing.JPanel {
@@ -24,6 +29,21 @@ public class TraCuu extends javax.swing.JPanel {
     ResultSet rs = null; 
     public TraCuu() {
         initComponents();
+        setTable1Header();
+    }
+    private void setTable1Header(){
+        tb_phieunhap.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            l.setBackground(new Color(0,88,128));
+            l.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+            l.setHorizontalAlignment(CENTER);
+            l.setFont(new Font("Segoe UI",Font.BOLD, 16));            
+            return l;
+        }
+        });
     }
     public void searchBooks(String madausach, String tentheloai, String tentacgia, String nhaxuatban) {
         
@@ -96,6 +116,19 @@ if (!conditions.isEmpty()) {
     }
 
     tb_phieunhap.setModel(model);
+     // Tạo một DefaultTableCellRenderer và thiết lập căn giữa
+          DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+          centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+
+          // Áp dụng renderer cho từng cột
+          for (int i = 0; i < tb_phieunhap.getColumnCount(); i++) {
+              tb_phieunhap.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+          }
+
+          // Căn giữa tiêu đề cột (Optional)
+          ((DefaultTableCellRenderer)tb_phieunhap.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
+    
+    
     } catch (SQLException ex) {
             Logger.getLogger(TraCuu.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -113,8 +146,6 @@ if (!conditions.isEmpty()) {
         kGradientPanel1 = new com.k33ptoo.components.KGradientPanel();
         rSMaterialButtonRectangle2 = new rojerusan.RSMaterialButtonRectangle();
         rSMaterialButtonRectangle4 = new rojerusan.RSMaterialButtonRectangle();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tb_phieunhap = new javax.swing.JTable();
         lb_masach = new javax.swing.JLabel();
         lb_masach2 = new javax.swing.JLabel();
         lb_masach3 = new javax.swing.JLabel();
@@ -123,6 +154,9 @@ if (!conditions.isEmpty()) {
         TG = new javax.swing.JTextField();
         TL = new javax.swing.JTextField();
         NXB = new javax.swing.JTextField();
+        tablePanel = new com.swing.PanelBorder();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tb_phieunhap = new javax.swing.JTable();
 
         kGradientPanel1.setBackground(new java.awt.Color(205, 241, 255));
         kGradientPanel1.setkEndColor(new java.awt.Color(0, 171, 253));
@@ -130,11 +164,6 @@ if (!conditions.isEmpty()) {
 
         rSMaterialButtonRectangle2.setText("TRA CỨU SÁCH");
         rSMaterialButtonRectangle2.setFont(new java.awt.Font("Montserrat ExtraBold", 1, 14)); // NOI18N
-        rSMaterialButtonRectangle2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rSMaterialButtonRectangle2ActionPerformed(evt);
-            }
-        });
 
         rSMaterialButtonRectangle4.setText("TÌM KIẾM");
         rSMaterialButtonRectangle4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -145,30 +174,27 @@ if (!conditions.isEmpty()) {
             }
         });
 
+        lb_masach.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lb_masach.setText("Đầu sách");
+
+        lb_masach2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lb_masach2.setText("Thể loại");
+
+        lb_masach3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lb_masach3.setText("Tác giả");
+
+        lb_masach4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lb_masach4.setText("Nhà xuất bản");
+
+        tablePanel.setBackground(new java.awt.Color(0, 88, 128));
+
+        jScrollPane1.setBorder(null);
+
         tb_phieunhap.setBackground(new java.awt.Color(0, 88, 128));
         tb_phieunhap.setForeground(new java.awt.Color(255, 255, 255));
         tb_phieunhap.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "Mã sách", "Đầu Sách", "Tên tác giả", "Số lượng", "Thể loại"
@@ -189,28 +215,34 @@ if (!conditions.isEmpty()) {
         tb_phieunhap.setSelectionForeground(new java.awt.Color(0, 88, 128));
         jScrollPane1.setViewportView(tb_phieunhap);
 
-        lb_masach.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lb_masach.setText("Đầu sách");
-
-        lb_masach2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lb_masach2.setText("Thể loại");
-
-        lb_masach3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lb_masach3.setText("Tác giả");
-
-        lb_masach4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lb_masach4.setText("Nhà xuất bản");
+        javax.swing.GroupLayout tablePanelLayout = new javax.swing.GroupLayout(tablePanel);
+        tablePanel.setLayout(tablePanelLayout);
+        tablePanelLayout.setHorizontalGroup(
+            tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tablePanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+        tablePanelLayout.setVerticalGroup(
+            tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 407, Short.MAX_VALUE)
+            .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(tablePanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
 
         javax.swing.GroupLayout kGradientPanel1Layout = new javax.swing.GroupLayout(kGradientPanel1);
         kGradientPanel1.setLayout(kGradientPanel1Layout);
         kGradientPanel1Layout.setHorizontalGroup(
             kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(kGradientPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, kGradientPanel1Layout.createSequentialGroup()
+                .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, kGradientPanel1Layout.createSequentialGroup()
                         .addContainerGap(29, Short.MAX_VALUE)
                         .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(rSMaterialButtonRectangle4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -232,12 +264,15 @@ if (!conditions.isEmpty()) {
                                 .addGap(18, 18, 18)
                                 .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(TG, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(NXB, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(NXB, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, kGradientPanel1Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tablePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(kGradientPanel1Layout.createSequentialGroup()
+                                .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(27, 27, 27))
-            .addGroup(kGradientPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
         );
         kGradientPanel1Layout.setVerticalGroup(
             kGradientPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,9 +297,9 @@ if (!conditions.isEmpty()) {
                         .addComponent(NXB, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(rSMaterialButtonRectangle4, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
-                .addGap(70, 70, 70))
+                .addGap(18, 18, 18)
+                .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -289,10 +324,6 @@ if (!conditions.isEmpty()) {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void rSMaterialButtonRectangle2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonRectangle2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rSMaterialButtonRectangle2ActionPerformed
-
     private void rSMaterialButtonRectangle4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonRectangle4ActionPerformed
 String madausach = DS.getText();
 String tentheloai = TL.getText();
@@ -316,6 +347,7 @@ String nhaxuatban = NXB.getText();
     private javax.swing.JLabel lb_masach4;
     private rojerusan.RSMaterialButtonRectangle rSMaterialButtonRectangle2;
     private rojerusan.RSMaterialButtonRectangle rSMaterialButtonRectangle4;
+    private com.swing.PanelBorder tablePanel;
     private javax.swing.JTable tb_phieunhap;
     // End of variables declaration//GEN-END:variables
 }
