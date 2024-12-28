@@ -63,6 +63,17 @@ public class QLKH extends javax.swing.JPanel {
                 model.addRow(new Object[]{rs.getString("MAKH"),rs.getString("TENKH"), rs.getString("DIACHI"), rs.getString("SODT"),  df.format(rs.getFloat("TONGNO"))});
             }
             jTable1.setModel(model);
+            // Tạo một DefaultTableCellRenderer và thiết lập căn giữa
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            
+            // Áp dụng renderer cho từng cột
+            for (int i = 0; i < jTable1.getColumnCount(); i++) {
+                jTable1.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            }
+            
+            // Căn giữa tiêu đề cột (Optional)
+            ((DefaultTableCellRenderer)jTable1.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
         } catch (SQLException ex) {
             Logger.getLogger(QLKH.class.getName()).log(Level.SEVERE, null, ex);
         }      

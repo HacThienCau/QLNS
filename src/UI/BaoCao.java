@@ -5,112 +5,164 @@
 package UI;
 
 
+import static UI.DatabaseConnect.getJDBCConnection;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import javax.swing.*;
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static javax.swing.SwingConstants.CENTER;
+import javax.swing.table.DefaultTableCellRenderer;
 
-/**
- *
- * @author ACER
- */
+class Sach {
+
+    private String maSach;
+    private int soLuong;
+    
+    public Sach(String maSach,int soLuong) {
+        this.maSach = maSach;
+        this.soLuong = soLuong;
+    }
+
+    public String getMaSach() {
+        return maSach;
+    }
+
+   
+    public int getSoLuong() {
+        return soLuong;
+    }
+}
+class KH {
+    private String maKH;
+    private double no;
+    public KH(String maKH, double no) {
+        this.maKH = maKH;
+        this.no = no;
+    }
+
+    public String getMaKH() {
+        return maKH;
+    }
+
+    public double getNo() {
+        return no;
+    }
+}
+
 public class BaoCao extends javax.swing.JPanel {
-
-  private JTextField date;
-
+    private boolean mode = true;   //true- tồn ; false - nợ
+    private JTextField date;
+    Connection conn = getJDBCConnection();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    List<Sach> list = new ArrayList<>();
+    List<KH> khList = new ArrayList<>();
     public BaoCao() {
         initComponents();
-        // Lấy JTextField từ JDateChooser
-        JTextField date = (JTextField) jDateChooser1.getDateEditor().getUiComponent();
-        // Đặt placeholder
-        String placeholder = "Ngày nhập";
-        date.setText(placeholder);
-        date.setForeground(Color.GRAY);
-        // Thêm sự kiện Focus để xử lý khi focus vào hoặc ra khỏi trường nhập liệu
-        date.addFocusListener(new java.awt.event.FocusAdapter() {
-        @Override
-        public void focusGained(java.awt.event.FocusEvent evt) {
-            if (date.getText().equals(placeholder)) {
-                date.setText("");
-                date.setForeground(Color.BLACK);
-            }
-        }
-
-        @Override
-        public void focusLost(java.awt.event.FocusEvent evt) {
-            if (date.getText().isEmpty()) {
-                date.setText(placeholder);
-                date.setForeground(Color.GRAY);
-            }
-        }
-    });  
+        setTable1Header();
+        
     }
-    private void layDuLieuTuCoSoDuLieu(String formattedDate) {
-        try {
-            // Kết nối đến cơ sở dữ liệu (thay thế bằng thông tin kết nối của bạn)
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sach", "root", "");
-            Statement stmt = conn.createStatement();
-
-            // Câu lệnh SQL để lấy dữ liệu (bạn có thể tùy chỉnh câu lệnh này)
-            String sql = "SELECT * FROM BAOCAOTONKHO WHERE NGAYLAP LIKE '%" + formattedDate + "%'";
-            ResultSet rs = stmt.executeQuery(sql);
-
-            // Tạo DefaultTableModel
-            DefaultTableModel model = new DefaultTableModel();
-            model.addColumn("STT");
-            model.addColumn("Mã sản phẩm");
-            model.addColumn("Tên sản phẩm");
-            model.addColumn("Tồn đầu");
-            model.addColumn("Phát sinh");
-            model.addColumn("Tồn cuối");
-
-            int stt = 1;
-            while (rs.next()) {
-                Object[] row = {
-                        stt++,
-                        rs.getString("MABCTK"),
-                        rs.getString("MASACH"),
-                        rs.getString("NGAYLAP"),
-                        rs.getInt("TONDAU"),
-                        rs.getInt("PHATSINH"),
-                        rs.getInt("TONCUOI")
-                };
-                model.addRow(row);
-            }
-
-            Table.setModel(model);
-
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    private void setTable1Header(){
+        Table.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            l.setBackground(new Color(0,88,128));
+            l.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+            l.setHorizontalAlignment(CENTER);
+            l.setFont(new Font("Segoe UI",Font.BOLD, 16));            
+            return l;
         }
+        });
+    }
+    private void layDuLieuTuCoSoDuLieu(int month, int year) {
+        String maThang = Integer.toString(month)+"/"+Integer.toString(year);
+        DefaultTableModel model = new DefaultTableModel(){
+            //không cho chỉnh sửa trong bảng
+            @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+        }; 
+        if(mode){// tồn
+            String tieude[] = new String[]{ "STT", "Mã sách","Tên sách", "Tồn đầu", "Phát sinh", "Tồn cuối"};
+            model.setColumnIdentifiers(tieude);
+            String sql = "SELECT * FROM BAOCAOTONKHO JOIN SACH ON SACH.MASACH = BAOCAOTONKHO.MASACH JOIN DAUSACH ON DAUSACH.MADAUSACH = SACH.MADAUSACH WHERE MABCTK = ?";
+            try {
+                ps = conn.prepareStatement(sql);
+                ps.setString(1,maThang);
+                rs = ps.executeQuery();
+                int i = 1;
+            while(rs.next()){
+                model.addRow(new Object[]{i,rs.getString("MASACH"),rs.getString("TENDAUSACH"), rs.getInt("TONDAU"), rs.getInt("PHATSINH"), rs.getInt("TONCUOI")});
+                i++;
+            }
+            Table.setModel(model);
+            } catch (SQLException ex) {
+                Logger.getLogger(QLKH.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+        }
+        else{   //nợ
+            String tieude[] = new String[]{ "STT", "Mã KH","Tên KH", "Nợ đầu","Phát sinh", "Nợ cuối"};
+            model.setColumnIdentifiers(tieude);
+            String sql = "SELECT * FROM BAOCAOCONGNO JOIN KHACHHANG ON KHACHHANG.MAKH = BAOCAOCONGNO.MAKH WHERE MABCCN = ?";
+            try {
+                ps = conn.prepareStatement(sql);
+                ps.setString(1,maThang);
+                rs = ps.executeQuery();
+            DecimalFormat df = new DecimalFormat("#.##");
+            int i = 1;
+            while(rs.next()){
+                model.addRow(new Object[]{i,rs.getString("MAKH"),rs.getString("TENKH"), df.format(rs.getFloat("NODAU")), df.format(rs.getFloat("PHATSINH")),  df.format(rs.getFloat("NOCUOI"))});
+                    i++;
+            }
+            Table.setModel(model);
+            } catch (SQLException ex) {
+                Logger.getLogger(QLKH.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+        }
+        
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         background1 = new com.component.Background();
         panelBorder1 = new com.swing.PanelBorder();
-        jLabel1 = new javax.swing.JLabel();
+        title = new javax.swing.JLabel();
         panelBorder3 = new com.swing.PanelBorder();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jScrollPane4 = new javax.swing.JScrollPane();
         Table = new rojerusan.RSTableMetro();
-        rSMaterialButtonRectangle1 = new rojerusan.RSMaterialButtonRectangle();
+        Tim = new rojerusan.RSMaterialButtonRectangle();
+        Thang = new com.toedter.calendar.JMonthChooser();
+        Nam = new com.toedter.calendar.JYearChooser();
+        Tao = new rojerusan.RSMaterialButtonRectangle();
 
         background1.setPreferredSize(new java.awt.Dimension(850, 700));
 
         panelBorder1.setBackground(new java.awt.Color(0, 88, 128));
+        panelBorder1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelBorder1MouseClicked(evt);
+            }
+        });
 
-        jLabel1.setBackground(new java.awt.Color(0, 88, 128));
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("BÁO CÁO TỒN");
+        title.setBackground(new java.awt.Color(0, 88, 128));
+        title.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        title.setForeground(new java.awt.Color(255, 255, 255));
+        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        title.setText("BÁO CÁO TỒN");
 
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
         panelBorder1.setLayout(panelBorder1Layout);
@@ -118,19 +170,17 @@ public class BaoCao extends javax.swing.JPanel {
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                .addContainerGap())
         );
         panelBorder1Layout.setVerticalGroup(
             panelBorder1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBorder1Layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
         panelBorder3.setBackground(new java.awt.Color(0, 88, 128));
-
-        jDateChooser1.setBackground(new java.awt.Color(0, 88, 128));
 
         Table.setBackground(new java.awt.Color(0, 88, 128));
         Table.setForeground(new java.awt.Color(255, 255, 255));
@@ -166,10 +216,10 @@ public class BaoCao extends javax.swing.JPanel {
         Table.setSelectionForeground(new java.awt.Color(255, 255, 255));
         jScrollPane4.setViewportView(Table);
 
-        rSMaterialButtonRectangle1.setText("Tìm kiếm");
-        rSMaterialButtonRectangle1.addActionListener(new java.awt.event.ActionListener() {
+        Tim.setText("Tìm kiếm");
+        Tim.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rSMaterialButtonRectangle1ActionPerformed(evt);
+                TimActionPerformed(evt);
             }
         });
 
@@ -179,9 +229,11 @@ public class BaoCao extends javax.swing.JPanel {
             panelBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBorder3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(rSMaterialButtonRectangle1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Thang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(79, 79, 79)
+                .addComponent(Nam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(72, 72, 72)
+                .addComponent(Tim, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22))
             .addGroup(panelBorder3Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
@@ -193,16 +245,24 @@ public class BaoCao extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBorder3Layout.createSequentialGroup()
                 .addGroup(panelBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelBorder3Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(Tim, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelBorder3Layout.createSequentialGroup()
                         .addGap(25, 25, 25)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBorder3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(rSMaterialButtonRectangle1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)))
+                        .addGroup(panelBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Nam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Thang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(25, Short.MAX_VALUE))
         );
+
+        Tao.setText("TẠO BÁO CÁO THÁNG NÀY");
+        Tao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TaoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout background1Layout = new javax.swing.GroupLayout(background1);
         background1.setLayout(background1Layout);
@@ -210,8 +270,11 @@ public class BaoCao extends javax.swing.JPanel {
             background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(background1Layout.createSequentialGroup()
                 .addGap(70, 70, 70)
-                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(background1Layout.createSequentialGroup()
+                        .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Tao, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(panelBorder3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(68, Short.MAX_VALUE))
         );
@@ -219,7 +282,9 @@ public class BaoCao extends javax.swing.JPanel {
             background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(background1Layout.createSequentialGroup()
                 .addGap(40, 40, 40)
-                .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Tao, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39)
                 .addComponent(panelBorder3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -237,23 +302,218 @@ public class BaoCao extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void rSMaterialButtonRectangle1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonRectangle1ActionPerformed
+    private void TimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TimActionPerformed
        // TODO add your handling code here:
-Date selectedDate = jDateChooser1.getDate();
-SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-String formattedDate = dateFormat.format(selectedDate);
-            layDuLieuTuCoSoDuLieu(formattedDate);
-    }//GEN-LAST:event_rSMaterialButtonRectangle1ActionPerformed
+        int selectedMonth = Thang.getMonth()+1;
+        int selectedYear = Nam.getYear();
+        layDuLieuTuCoSoDuLieu(selectedMonth, selectedYear);
+    }//GEN-LAST:event_TimActionPerformed
+
+    private void panelBorder1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelBorder1MouseClicked
+        if(!mode){
+            title.setText("BÁO CÁO TỒN");
+            mode = true;
+        }               
+        else{
+            title.setText("BÁO CÁO CÔNG NỢ");
+            mode = false;
+        }
+        DefaultTableModel model = new DefaultTableModel(){
+            //không cho chỉnh sửa trong bảng
+            @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+        }; 
+        if(mode){// tồn
+            String tieude[] = new String[]{ "STT", "Mã sách","Tên sách", "Tồn đầu", "Phát sinh", "Tồn cuối"};
+            model.setColumnIdentifiers(tieude);
+        }
+        else{   //nợ
+             String tieude[] = new String[]{ "STT", "Mã KH","Tên KH", "Nợ đầu","Phát sinh", "Nợ cuối"};
+            model.setColumnIdentifiers(tieude);
+        }
+        Table.setModel(model);
+    }//GEN-LAST:event_panelBorder1MouseClicked
+    private boolean isExist(String maThang){
+        if(mode){// tồn
+
+            String sql = "SELECT * FROM BAOCAOTONKHO WHERE MABCTK = ?";
+            try {
+                ps = conn.prepareStatement(sql);
+                ps.setString(1,maThang);
+                rs = ps.executeQuery();
+     
+                if(rs.next())return true;
+            } catch (SQLException ex) {
+                Logger.getLogger(QLKH.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+        }
+        else{   //nợ
+           
+            String sql = "SELECT * FROM BAOCAOCONGNO WHERE MABCCN = ?";
+            try {
+                ps = conn.prepareStatement(sql);
+                ps.setString(1,maThang);
+                rs = ps.executeQuery();
+                if(rs.next())return true;
+            } catch (SQLException ex) {
+                Logger.getLogger(QLKH.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+        }
+        return false;
+    }
+    private int getTonCuoiThangTruoc(String maSach, String maThangTruoc){
+            String sql = "SELECT TONCUOI FROM BAOCAOTONKHO WHERE MABCTK = ? AND MASACH = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,maThangTruoc);
+            ps.setString(2,maSach);
+            rs = ps.executeQuery();
+            if(rs.next()) return rs.getInt("TONCUOI");
+        } catch (SQLException ex) {
+            Logger.getLogger(BaoCao.class.getName()).log(Level.SEVERE, null, ex);
+        }     
+        return 0;
+    }
+    private int addSach(String maThang, String maSach, int tondau, int phatsinh, int toncuoi){
+        String sql = "INSERT INTO BAOCAOTONKHO (MABCTK, MASACH, TONDAU, PHATSINH, TONCUOI) VALUES (?,?,?,?,?)";
+        try {
+            Connection conn2 = DatabaseConnect.getJDBCConnection(); 
+            PreparedStatement ps2 = conn2.prepareStatement(sql);
+            ps2.setString(1, maThang);
+            ps2.setString(2, maSach);
+            ps2.setInt(3, tondau);
+            ps2.setInt(4, phatsinh);
+            ps2.setInt(5,toncuoi);
+            int result = ps2.executeUpdate();
+            ps2.close();
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaoCao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    private double getNoCuoiThangTruoc(String maKH, String maThangTruoc){
+        String sql = "SELECT NOCUOI FROM BAOCAOCONGNO WHERE MABCCN = ? AND MAKH = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,maThangTruoc);
+            ps.setString(2,maKH);
+            rs = ps.executeQuery();
+            if(rs.next()) return rs.getDouble("NOCUOI");
+        } catch (SQLException ex) {
+            Logger.getLogger(BaoCao.class.getName()).log(Level.SEVERE, null, ex);
+        }     
+        return 0.0;
+    }
+    private int addKH(String maThang, String maKH, double nodau, double phatsinh, double nocuoi){
+        String sql = "INSERT INTO BAOCAOCONGNO (MABCCN, MAKH, NODAU, PHATSINH, NOCUOI) VALUES (?,?,?,?,?)";
+        try {
+            Connection conn2 = DatabaseConnect.getJDBCConnection(); 
+            PreparedStatement ps2 = conn2.prepareStatement(sql);
+            ps2.setString(1, maThang);
+            ps2.setString(2, maKH);
+            ps2.setDouble(3, nodau);
+            ps2.setDouble(4, phatsinh);
+            ps2.setDouble(5,nocuoi);
+            int result = ps2.executeUpdate();
+            ps2.close();
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaoCao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    private void lapBaoCaoThangNay(String maThang){
+        LocalDate currentDate = LocalDate.now(); 
+        int month = currentDate.getMonthValue()-1;
+        int year = currentDate.getYear();
+        if(month==0){
+            month=12;
+            year-=year;
+        }
+        String maThangTruoc = Integer.toString(month)+"/"+Integer.toString(year);
+        if(mode){       //tồn
+            String sql = "SELECT MASACH,SLTON FROM SACH";
+            try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            list.clear();
+            while (rs.next()){
+                list.add(new Sach(rs.getString("MASACH"),rs.getInt("SLTON")));
+            }
+            for(Sach index : list){
+                String maSach = index.getMaSach();
+                int toncuoi = index.getSoLuong();
+                int tondau = getTonCuoiThangTruoc(maSach,maThangTruoc); 
+                int phatsinh = toncuoi-tondau;
+                int result = addSach(maThang,maSach,tondau,phatsinh,toncuoi);
+                if(result==1){
+                    System.out.println("Them thanh cong:"+maSach);
+                }else {
+                    System.out.println("Thêm thất bại: " + maSach);
+                }
+            }
+            JOptionPane.showMessageDialog(BaoCao.this, "Thêm báo cáo tồn kho thành công");
+            rs.close();
+            ps.close();
+            } catch (SQLException ex) {
+                System.err.println("Lỗi khi thực thi truy vấn: " + ex.getMessage());
+            }           
+        }
+        else{   //nợ
+            String sql = "SELECT MAKH,TONGNO FROM KHACHHANG";
+            try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            list.clear();
+            while (rs.next()){
+                khList.add(new KH(rs.getString("MAKH"),rs.getDouble("TONGNO")));
+            }
+            for(KH index : khList){
+                String maKH = index.getMaKH();
+                double nocuoi = index.getNo();
+                double nodau = getNoCuoiThangTruoc(maKH,maThangTruoc); 
+                double phatsinh = nocuoi-nodau;
+                int result = addKH(maThang,maKH,nodau,phatsinh,nocuoi);
+                if(result==1){
+                    System.out.println("Them thanh cong:"+maKH);
+                }else {
+                    System.out.println("Thêm thất bại: " + maKH);
+                }
+            }
+            JOptionPane.showMessageDialog(BaoCao.this, "Thêm báo cáo tồn kho thành công");
+            rs.close();
+            ps.close();
+            } catch (SQLException ex) {
+                System.err.println("Lỗi khi thực thi truy vấn: " + ex.getMessage());
+            }           
+        }
+    }
+    private void TaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TaoActionPerformed
+        LocalDate currentDate = LocalDate.now(); 
+        int month = currentDate.getMonthValue();
+        int year = currentDate.getYear();
+        String maThang = Integer.toString(month)+"/"+Integer.toString(year);
+        if(isExist(maThang)){
+            JOptionPane.showMessageDialog(BaoCao.this, "Báo cáo tháng này đã tồn tại");
+            return;
+        }
+        lapBaoCaoThangNay(maThang);
+    }//GEN-LAST:event_TaoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JYearChooser Nam;
     private rojerusan.RSTableMetro Table;
+    private rojerusan.RSMaterialButtonRectangle Tao;
+    private com.toedter.calendar.JMonthChooser Thang;
+    private rojerusan.RSMaterialButtonRectangle Tim;
     private com.component.Background background1;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane4;
     private com.swing.PanelBorder panelBorder1;
     private com.swing.PanelBorder panelBorder3;
-    private rojerusan.RSMaterialButtonRectangle rSMaterialButtonRectangle1;
+    private javax.swing.JLabel title;
     // End of variables declaration//GEN-END:variables
 }
