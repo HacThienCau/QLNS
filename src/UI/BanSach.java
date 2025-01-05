@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +57,7 @@ class CTBan {
     }
 }
 
-
+   
 public class BanSach extends javax.swing.JPanel {
     Connection conn = getJDBCConnection();
     PreparedStatement ps = null;
@@ -74,6 +75,9 @@ public class BanSach extends javax.swing.JPanel {
         setTable2Header();
         loadTable1();
         loadTable2("");
+        loadComboBox();
+        loadComboBoxSach();
+        hoTen.setFocusable(false);
         setMode(0);
     }
     private void setMode(int x){
@@ -85,7 +89,7 @@ public class BanSach extends javax.swing.JPanel {
             Tim.setVisible(true);
             TraCuuPanel.setVisible(true);
             KTTC.setVisible(false);
-            hoTen.setFocusable(true);
+            maKH.setEnabled(true);
             NLHD.setFocusable(true);
             TienTraField.setFocusable(true);
             jTable1.setFocusable(true);
@@ -98,11 +102,26 @@ public class BanSach extends javax.swing.JPanel {
             TraCuuPanel.setVisible(false);
             KTTC.setVisible(true);
             hoTen.setFocusable(false);
+            maKH.setEnabled(false);
             NLHD.setFocusable(false);
             TienTraField.setFocusable(false);
             jTable1.setFocusable(false);
         }
         mode = x;
+    }
+     private void loadComboBoxSach(){
+        MS.removeAllItems();
+        String sql = "SELECT * FROM SACH";
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            MS.addItem("Chọn mã sách");
+            while(rs.next()){
+                MS.addItem(rs.getString("MASACH"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     private void setTable1Header(){
         jTable1.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
@@ -134,6 +153,7 @@ public class BanSach extends javax.swing.JPanel {
     }
     private void loadTable1(){
         // create jTable1 columns
+        
         DefaultTableModel model = new DefaultTableModel(){
             //không cho chỉnh sửa trong bảng
             @Override
@@ -240,18 +260,20 @@ public class BanSach extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         ThemButton = new javax.swing.JButton();
-        TS = new javax.swing.JTextField();
         SL = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        TL = new javax.swing.JTextField();
+        TS = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        Nam = new javax.swing.JTextField();
+        TL = new javax.swing.JTextField();
+        MS = new javax.swing.JComboBox<>();
+        jLabel5 = new javax.swing.JLabel();
+        SLT = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        DGN = new javax.swing.JTextField();
         panelBorder1 = new com.swing.PanelBorder();
         background1 = new com.component.Background();
         TitlePanel = new com.swing.PanelBorder();
         title = new javax.swing.JLabel();
-        hoTen = new javax.swing.JTextField();
-        NLHD = new javax.swing.JTextField();
         tablePanel = new com.swing.PanelBorder();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -270,19 +292,22 @@ public class BanSach extends javax.swing.JPanel {
         TraCuu = new javax.swing.JTextField();
         Tim = new javax.swing.JButton();
         KTTC = new javax.swing.JButton();
+        maKH = new javax.swing.JComboBox<>();
+        hoTen = new javax.swing.JTextField();
+        NLHD = new javax.swing.JTextField();
 
         ThemDialog.setLocation(new java.awt.Point(600, 200));
-        ThemDialog.setPreferredSize(new java.awt.Dimension(403, 281));
-        ThemDialog.setResizable(false);
-        ThemDialog.setSize(new java.awt.Dimension(403, 281));
+        ThemDialog.setMinimumSize(new java.awt.Dimension(407, 350));
+        ThemDialog.setPreferredSize(new java.awt.Dimension(407, 300));
+        ThemDialog.setSize(new java.awt.Dimension(407, 300));
         ThemDialog.setType(java.awt.Window.Type.POPUP);
         ThemDialog.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setText("Tên sách:");
-        ThemDialog.getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(31, 42, -1, -1));
+        jLabel1.setText("Mã sách:");
+        ThemDialog.getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
         jLabel2.setText("Số lượng:");
-        ThemDialog.getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, -1, -1));
+        ThemDialog.getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, -1, -1));
 
         ThemButton.setText("Thêm");
         ThemButton.addActionListener(new java.awt.event.ActionListener() {
@@ -290,17 +315,39 @@ public class BanSach extends javax.swing.JPanel {
                 ThemButtonActionPerformed(evt);
             }
         });
-        ThemDialog.getContentPane().add(ThemButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 200, -1, -1));
-        ThemDialog.getContentPane().add(TS, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 39, 230, -1));
-        ThemDialog.getContentPane().add(SL, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 150, 230, -1));
+        ThemDialog.getContentPane().add(ThemButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 250, -1, -1));
+        ThemDialog.getContentPane().add(SL, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 210, 230, -1));
 
-        jLabel3.setText("Thể loại:");
-        ThemDialog.getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(31, 78, -1, -1));
-        ThemDialog.getContentPane().add(TL, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 75, 230, -1));
+        jLabel3.setText("Tên sách:");
+        ThemDialog.getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 90, -1, -1));
 
-        jLabel4.setText("Năm:");
-        ThemDialog.getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, -1, -1));
-        ThemDialog.getContentPane().add(Nam, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 110, 230, -1));
+        TS.setEnabled(false);
+        ThemDialog.getContentPane().add(TS, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, 230, -1));
+
+        jLabel4.setText("Thể loại");
+        ThemDialog.getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, -1, -1));
+
+        TL.setEnabled(false);
+        ThemDialog.getContentPane().add(TL, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 120, 230, -1));
+
+        MS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MSActionPerformed(evt);
+            }
+        });
+        ThemDialog.getContentPane().add(MS, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 50, 230, -1));
+
+        jLabel5.setText("Số lượng tồn:");
+        ThemDialog.getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, -1, -1));
+
+        SLT.setEnabled(false);
+        ThemDialog.getContentPane().add(SLT, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 150, 230, -1));
+
+        jLabel6.setText("Đơn giá nhập:");
+        ThemDialog.getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, -1, -1));
+
+        DGN.setEnabled(false);
+        ThemDialog.getContentPane().add(DGN, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 180, 230, -1));
 
         setBackground(new java.awt.Color(205, 241, 255));
 
@@ -332,34 +379,6 @@ public class BanSach extends javax.swing.JPanel {
                     .addComponent(title)
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
-
-        hoTen.setBackground(new java.awt.Color(176, 231, 254));
-        hoTen.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        hoTen.setForeground(new java.awt.Color(0, 49, 64));
-        hoTen.setText("Họ tên khách hàng");
-        hoTen.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 88, 128)));
-        hoTen.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                hoTenFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                hoTenFocusLost(evt);
-            }
-        });
-
-        NLHD.setBackground(new java.awt.Color(176, 231, 254));
-        NLHD.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        NLHD.setForeground(new java.awt.Color(0, 49, 64));
-        NLHD.setText("Số điện thoại khách hàng");
-        NLHD.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 88, 128)));
-        NLHD.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                NLHDFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                NLHDFocusLost(evt);
-            }
-        });
 
         tablePanel.setBackground(new java.awt.Color(0, 88, 128));
 
@@ -474,7 +493,7 @@ public class BanSach extends javax.swing.JPanel {
                         .addGap(35, 35, 35)
                         .addComponent(XoaSP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(InHoaDon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
                 .addGroup(tablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(tablePanelLayout.createSequentialGroup()
                         .addComponent(ConLai, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -617,44 +636,72 @@ public class BanSach extends javax.swing.JPanel {
             }
         });
 
+        maKH.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maKHActionPerformed(evt);
+            }
+        });
+
+        hoTen.setBackground(new java.awt.Color(138, 218, 254));
+        hoTen.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        hoTen.setForeground(new java.awt.Color(0, 49, 64));
+        hoTen.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 49, 64)));
+        hoTen.setFocusable(false);
+
+        NLHD.setBackground(new java.awt.Color(138, 218, 254));
+        NLHD.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        NLHD.setForeground(new java.awt.Color(0, 49, 64));
+        NLHD.setText("Ngày lập hóa đơn (dd/MM/yyyy)");
+        NLHD.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 49, 64)));
+        NLHD.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                NLHDFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                NLHDFocusLost(evt);
+            }
+        });
+
         javax.swing.GroupLayout background1Layout = new javax.swing.GroupLayout(background1);
         background1.setLayout(background1Layout);
         background1Layout.setHorizontalGroup(
             background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(background1Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(TitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, background1Layout.createSequentialGroup()
-                .addContainerGap(61, Short.MAX_VALUE)
                 .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, background1Layout.createSequentialGroup()
-                        .addComponent(TraCuu, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(Tim, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(KTTC, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, background1Layout.createSequentialGroup()
-                            .addGap(23, 23, 23)
-                            .addComponent(hoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(85, 85, 85)
-                            .addComponent(NLHD, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(31, 31, 31))
-                        .addComponent(TraCuuPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(50, 50, 50))
+                    .addGroup(background1Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(TitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(background1Layout.createSequentialGroup()
+                        .addGap(85, 85, 85)
+                        .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, background1Layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(TraCuu, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(Tim, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(KTTC, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(background1Layout.createSequentialGroup()
+                                .addComponent(maKH, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(hoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(NLHD))
+                            .addComponent(tablePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(TraCuuPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
         background1Layout.setVerticalGroup(
             background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(background1Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(TitlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(hoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(maKH, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(NLHD, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(12, 12, 12)
                 .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -690,26 +737,6 @@ public class BanSach extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void hoTenFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_hoTenFocusLost
-        if("".equals(hoTen.getText())){
-            hoTen.setText("Họ tên khách hàng");
-        }
-    }//GEN-LAST:event_hoTenFocusLost
-    private void hoTenFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_hoTenFocusGained
-        if("Họ tên khách hàng".equals(hoTen.getText())){
-            hoTen.setText("");
-        }
-    }//GEN-LAST:event_hoTenFocusGained
-    private void NLHDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_NLHDFocusGained
-        if("Số điện thoại khách hàng".equals(NLHD.getText())){
-            NLHD.setText("");
-        }
-    }//GEN-LAST:event_NLHDFocusGained
-    private void NLHDFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_NLHDFocusLost
-        if("".equals(NLHD.getText())){
-            NLHD.setText("Số điện thoại khách hàng");
-        }
-    }//GEN-LAST:event_NLHDFocusLost
     private void ThemSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemSPActionPerformed
         ThemDialog.setVisible(true);
     }//GEN-LAST:event_ThemSPActionPerformed
@@ -737,24 +764,14 @@ public class BanSach extends javax.swing.JPanel {
         }        
         return -1;
     }
-    private void addToDSSP(String ts, String tl, String nam, String sl) {
-        String sql = "SELECT MASACH,SLTON,DONGIANHAP FROM SACH JOIN DAUSACH ON SACH.MADAUSACH = DAUSACH.MADAUSACH JOIN THELOAI ON DAUSACH.MATHELOAI = THELOAI.MATHELOAI WHERE TENDAUSACH = ? AND TENTHELOAI = ? AND NAMXB = ?";
-        try {
-            ps = conn.prepareStatement(sql);
-            ps.setString(1,ts);
-            ps.setString(2,tl);
-            ps.setString(3, nam);
-            rs = ps.executeQuery();
-            if(!rs.next()){
-                JOptionPane.showMessageDialog(BanSach.this, "Không tìm thấy sản phẩm");
-                return;
-            }
-            String masach = rs.getString("MASACH");
-            double gianhap = rs.getDouble("DONGIANHAP");
+    private void addToDSSP(String masach, String ts, String tl, String slt, String soluong, String dgn) {
+        
+            double gianhap = Double.parseDouble(dgn);
             System.out.println("Ma sach: "+masach);
-            int slton = rs.getInt("SLTon");
+            int slton = Integer.parseInt(slt);
+            int sl = Integer.parseInt(soluong);
             int sltttsb = getSLTTTSB();
-            if(slton-Integer.parseInt(sl) < sltttsb){
+            if(slton-sl < sltttsb){
                 JOptionPane.showMessageDialog(BanSach.this, "Số lượng tồn phải lớn hơn số lượng tối thiểu tồn tối thiểu");
                 return;
             }                
@@ -763,23 +780,20 @@ public class BanSach extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(BanSach.this, "Đã xảy ra lỗi");
                 return;
             }
-            danhsachsanpham.add(new CTBan(masach,ts,Integer.parseInt(sl),(gianhap*tlgb),tl));
+            danhsachsanpham.add(new CTBan(masach,ts,sl,(gianhap*tlgb),tl));
             loadTable1();
-        } catch (SQLException ex) {
-            Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }
     private void ThemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemButtonActionPerformed
-        if(Integer.parseInt(SL.getText())<1){
+        String sl = SL.getText();
+        if(sl.isBlank()||Integer.parseInt(sl)<1){
             JOptionPane.showMessageDialog(BanSach.this, "Số lượng phải lớn hơn 0");
             return;
         }
-        addToDSSP(TS.getText(),TL.getText(),Nam.getText(),SL.getText());
-        Nam.setText("");
-        TS.setText("");
-        TL.setText("");
+        addToDSSP(MS.getSelectedItem().toString(),TS.getText(),TL.getText(),SLT.getText(),SL.getText(),DGN.getText());
+        MS.setSelectedIndex(0);
         SL.setText("");
-        ThemDialog.setVisible(false);       
+        ThemDialog.setVisible(false); 
     }//GEN-LAST:event_ThemButtonActionPerformed
 
     private void XoaSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_XoaSPActionPerformed
@@ -862,25 +876,36 @@ public class BanSach extends javax.swing.JPanel {
         }        
         return "";
     }
-    private void createHD(String maHD, String maKH, double tongtien, double tientra, double conlai){
-        String sql = "INSERT INTO hoadon (MAHD, MAKH, NGAYLAPHD, TONGTIEN, DATRA, CONLAI) VALUES (?,?,?,?,?,?)";
-        LocalDate today = LocalDate.now();
-        Date nn = Date.valueOf(today);
+    private String createHD(String maKH, double tongtien, double tientra, double conlai){
+        String sql = "INSERT INTO hoadon (MAKH, NGAYLAPHD, TONGTIEN, DATRA, CONLAI) VALUES (?,?,?,?,?)";
+        String ngay = NLHD.getText(); //dd/MM/yyyy
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(ngay, inputFormatter);
+        String formattedNgay = date.format(outputFormatter);
+        Date nn = Date.valueOf(formattedNgay);
         try {
             ps = conn.prepareStatement(sql);
-            ps.setString(1, maHD);
-            ps.setString(2, maKH);
-            ps.setDate(3, nn);
-            ps.setDouble(4, tongtien);
-            ps.setDouble(5, tientra);
-            ps.setDouble(6, conlai);            
-            int result = ps.executeUpdate();
-            if(result == 1){
-                JOptionPane.showMessageDialog(BanSach.this, "Thêm phiếu nhập sách thành công");
+            ps.setString(1, maKH);
+            ps.setDate(2, nn);
+            ps.setDouble(3, tongtien);
+            ps.setDouble(4, tientra);
+            ps.setDouble(5, conlai);            
+            ps.executeUpdate();
+            ps.close();
+            sql = "select last_insert_id()";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            String mahd = null;
+            if(rs.next()){
+                mahd = rs.getString(1);
+                JOptionPane.showMessageDialog(BanSach.this, "Thêm hóa đơn thành công");
             }
+            return mahd;
         } catch (SQLException ex) {
             Logger.getLogger(NhapSach.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
     }
     private void updateCTHD(String maHD){
         String sql = "INSERT INTO CHITIETHOADON (MAHD, MASACH, SLBAN, ThanhTien) VALUES (?,?,?,?)";
@@ -923,16 +948,13 @@ public class BanSach extends javax.swing.JPanel {
         }
     }
     private void InHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InHoaDonActionPerformed
-        if(hoTen.getText().equals("Họ tên khách hàng")||NLHD.getText().equals("Số điện thoại khách hàng")||TienTraField.getText().isBlank()||danhsachsanpham.isEmpty()||ConLaiField.getText().isBlank()){
+        if("Chọn mã khách hàng".equals(maKH.getSelectedItem().toString())||TienTraField.getText().isBlank()||danhsachsanpham.isEmpty()||ConLaiField.getText().isBlank()||"Ngày lập hóa đơn (dd/MM/yyyy)".equals(NLHD.getText())){
             JOptionPane.showMessageDialog(BanSach.this, "Vui lòng nhập đầy đủ thông tin");
             return;
         }
-        String hoten = hoTen.getText();
-        String sdt  = NLHD.getText();
-        String maKH = getMaKH(hoten,sdt);
-        System.out.println("maKH:"+maKH);
+        String makh = maKH.getSelectedItem().toString();
         double sntd = getSNTD(); //số nợ tối đa
-        double tongno = getTongNo(maKH);
+        double tongno = getTongNo(makh);
         double conlai = Double.parseDouble(ConLaiField.getText());
         if(conlai < 0 && tongno-conlai > sntd){
             JOptionPane.showMessageDialog(BanSach.this, "Khách hàng không được nợ quá số nợ tối đa");
@@ -940,20 +962,34 @@ public class BanSach extends javax.swing.JPanel {
         }
         double tongtien  = Double.parseDouble(TongTienField.getText());
         double tientra = Double.parseDouble(TienTraField.getText());
-        String mahd = getLastestMHD();
-        createHD(mahd, maKH, tongtien, tientra, conlai);
+        String mahd = createHD(makh, tongtien, tientra, conlai);
         updateCTHD(mahd);
         updateSach();
-        if (conlai<0) updateTongNoKH(maKH,conlai);
+        if (conlai<0) updateTongNoKH(makh,conlai);
         danhsachsanpham.clear();
         TongTienField.setText("");
         TienTraField.setText("");
         ConLaiField.setText("");
         hoTen.setText("");
-        NLHD.setText("");
+        maKH.setSelectedItem("Chọn mã khách hàng");
+        NLHD.setText("Ngày lập hóa đơn (dd/MM/yyyy)");
+        loadTable1();
         loadTable2("");
     }//GEN-LAST:event_InHoaDonActionPerformed
-
+    private void loadComboBox(){
+        maKH.removeAllItems();
+        String sql = "SELECT MAKH FROM KHACHHANG";
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            maKH.addItem("Chọn mã khách hàng");
+            while (rs.next()){
+               maKH.addItem(rs.getString("MAKH"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     private void TraCuuFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TraCuuFocusGained
         if("Nhập mã hóa đơn cần tra cứu".equals(TraCuu.getText())){
             TraCuu.setText("");
@@ -982,9 +1018,9 @@ public class BanSach extends javax.swing.JPanel {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             if(rs.next()){
                 hoTen.setText(rs.getString("TENKH"));
-                NLHD.setText(sdf.format(rs.getDate("NGAYLAPHD")));
                 TienTraField.setText(Double.toString(rs.getDouble("DATRA")));
                 ConLaiField.setText(Double.toString(rs.getDouble("CONLAI")));
+                NLHD.setText(sdf.format(rs.getDate("NGAYLAPHD")));
             }
         } catch (SQLException ex) {
             Logger.getLogger(BanSach.class.getName()).log(Level.SEVERE, null, ex);
@@ -1023,10 +1059,11 @@ public class BanSach extends javax.swing.JPanel {
     private void KTTCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KTTCActionPerformed
         setMode(0);
         hoTen.setText("");
-        NLHD.setText("");
+        maKH.setSelectedItem("Chọn mã khách hàng");
         TongTienField.setText("");
         TienTraField.setText("");
         ConLaiField.setText("");
+        NLHD.setText("Ngày lập hóa đơn (dd/MM/yyyy)");
         chitiethoadon.clear();
         loadTable1();
         loadTable2("");
@@ -1039,15 +1076,73 @@ public class BanSach extends javax.swing.JPanel {
         ConLaiField.setText(String.valueOf(conlai));
     }//GEN-LAST:event_TienTraFieldActionPerformed
 
+    private void maKHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maKHActionPerformed
+        if("Chọn mã khách hàng".equals(maKH.getSelectedItem().toString())){
+            hoTen.setText("Họ và tên khách hàng");
+            return;
+        }
+        String sql = "SELECT TENKH FROM KHACHHANG WHERE MAKH = ?";
+        String makh = maKH.getSelectedItem().toString();
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, makh);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                hoTen.setText(rs.getString("TENKH"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_maKHActionPerformed
+
+    private void MSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MSActionPerformed
+        if("Chọn mã sách".equals(MS.getSelectedItem().toString())){
+            TS.setText("");
+            TL.setText("");
+            SLT.setText("");
+            DGN.setText("");
+            return;
+        }
+        String sql = "SELECT * FROM SACH JOIN DAUSACH ON DAUSACH.MADAUSACH = SACH.MADAUSACH JOIN THELOAI ON THELOAI.MATHELOAI = DAUSACH.MATHELOAI WHERE MASACH = ?";
+        String masach = MS.getSelectedItem().toString();
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, masach);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                TS.setText(rs.getString("TENDAUSACH"));
+                TL.setText(rs.getString("TENTHELOAI"));
+                SLT.setText(rs.getString("SLTON"));
+                DGN.setText(rs.getString("DONGIANHAP"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_MSActionPerformed
+
+    private void NLHDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_NLHDFocusGained
+        if("Ngày lập hóa đơn (dd/MM/yyyy)".equals(NLHD.getText())){
+            NLHD.setText("");
+        }
+    }//GEN-LAST:event_NLHDFocusGained
+
+    private void NLHDFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_NLHDFocusLost
+        if("".equals(NLHD.getText())){
+            NLHD.setText("Ngày lập hóa đơn (dd/MM/yyyy)");
+        }
+    }//GEN-LAST:event_NLHDFocusLost
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ConLai;
     private javax.swing.JTextField ConLaiField;
+    private javax.swing.JTextField DGN;
     private javax.swing.JButton InHoaDon;
     private javax.swing.JButton KTTC;
+    private javax.swing.JComboBox<String> MS;
     private javax.swing.JTextField NLHD;
-    private javax.swing.JTextField Nam;
     private javax.swing.JTextField SL;
+    private javax.swing.JTextField SLT;
     private javax.swing.JTextField TL;
     private javax.swing.JTextField TS;
     private javax.swing.JButton ThemButton;
@@ -1068,10 +1163,13 @@ public class BanSach extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JComboBox<String> maKH;
     private com.swing.PanelBorder panelBorder1;
     private com.swing.PanelBorder tablePanel;
     private javax.swing.JLabel title;

@@ -231,7 +231,7 @@ public class BaoCao extends javax.swing.JPanel {
 
         Tao.setBackground(new java.awt.Color(255, 255, 255));
         Tao.setForeground(new java.awt.Color(0, 112, 192));
-        Tao.setText("TẠO BÁO CÁO THÁNG NÀY");
+        Tao.setText("CẬP NHẬT BÁO CÁO THÁNG NÀY");
         Tao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TaoActionPerformed(evt);
@@ -248,14 +248,14 @@ public class BaoCao extends javax.swing.JPanel {
                 .addContainerGap(14, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBorder3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panelBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBorder3Layout.createSequentialGroup()
+                .addGroup(panelBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Tao, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelBorder3Layout.createSequentialGroup()
                         .addComponent(Thang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46)
                         .addComponent(Nam, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(72, 72, 72)
-                        .addComponent(Tim, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(Tao, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(Tim, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(22, 22, 22))
         );
         panelBorder3Layout.setVerticalGroup(
@@ -284,12 +284,9 @@ public class BaoCao extends javax.swing.JPanel {
             .addGroup(background1Layout.createSequentialGroup()
                 .addGap(70, 70, 70)
                 .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(background1Layout.createSequentialGroup()
-                        .addComponent(panelBorder3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(68, Short.MAX_VALUE))
-                    .addGroup(background1Layout.createSequentialGroup()
-                        .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(panelBorder3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
         background1Layout.setVerticalGroup(
             background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -436,14 +433,87 @@ public class BaoCao extends javax.swing.JPanel {
         }
         return 0;
     }
-    private void lapBaoCaoThangNay(String maThang){
-        LocalDate currentDate = LocalDate.now(); 
-        int month = currentDate.getMonthValue()-1;
-        int year = currentDate.getYear();
+    private int nhapsach(String masach, int curMonth, int curYear){
+        String sql = "SELECT SLNHAP FROM CHITIETNHAPSACH JOIN PHIEUNHAPSACH ON PHIEUNHAPSACH.MAPHIEUNHAP = CHITIETNHAPSACH.MAPHIEUNHAP WHERE MASACH = ? AND MONTH(NGAYNHAP) = ? AND YEAR(NGAYNHAP)=?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,masach);
+            ps.setInt(2,curMonth);
+            ps.setInt(3,curYear);
+            rs = ps.executeQuery();
+            int sum = 0;
+            while(rs.next()){
+                sum += rs.getInt("SLNHAP");
+            }
+            return sum;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaoCao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    private int bansach(String masach, int curMonth, int curYear){
+        String sql = "SELECT SLBAN FROM CHITIETHOADON JOIN HOADON ON HOADON.MAHD = CHITIETHOADON.MAHD WHERE MASACH = ? AND MONTH(NGAYLAPHD) = ? AND YEAR(NGAYLAPHD) =?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,masach);
+            ps.setInt(2,curMonth);
+            ps.setInt(3,curYear);
+            rs = ps.executeQuery();
+            int sum = 0;
+            while(rs.next()){
+                sum += rs.getInt("SLBAN");
+            }
+            return sum;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaoCao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    private double noKhiMuaSach(String maKH, int curMonth, int curYear){
+        String sql = "SELECT CONLAI FROM HOADON WHERE MAKH = ? AND MONTH(NGAYLAPHD) = ? AND YEAR(NGAYLAPHD) =?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,maKH);
+            ps.setInt(2,curMonth);
+            ps.setInt(3,curYear);
+            rs = ps.executeQuery();
+            double sum = 0;
+            while(rs.next()){
+                if(rs.getDouble("CONLAI")<0)    //do còn lại < 0 thì mới nợ
+                sum -= rs.getDouble("CONLAI");  //trừ do còn lại là số âm
+            }
+            return sum;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaoCao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0.00;
+    }
+    private double thutien(String maKH, int curMonth, int curYear){
+        String sql = "SELECT SOTIEN FROM PHIEUTHUTIEN WHERE MAKH = ? AND MONTH(NGAYTHU) = ? AND YEAR(NGAYTHU) =?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,maKH);
+            ps.setInt(2,curMonth);
+            ps.setInt(3,curYear);
+            rs = ps.executeQuery();
+            double sum = 0;
+            while(rs.next()){
+                sum += rs.getDouble("SOTIEN");
+            }
+            return sum;
+        } catch (SQLException ex) {
+            Logger.getLogger(BaoCao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0.00;
+    }
+    private void lapBaoCaoThangNay(int curMonth, int curYear){
+        int month = curMonth-1; 
+        int year = curYear;
         if(month==0){
             month=12;
-            year-=year;
+            year = year-1;
         }
+        String maThang = Integer.toString(curMonth)+"/"+Integer.toString(curYear);
         String maThangTruoc = Integer.toString(month)+"/"+Integer.toString(year);
         if(mode){       //tồn
             String sql = "SELECT MASACH,SLTON FROM SACH";
@@ -456,9 +526,9 @@ public class BaoCao extends javax.swing.JPanel {
             }
             for(Sach index : list){
                 String maSach = index.getMaSach();
-                int toncuoi = index.getSoLuong();
                 int tondau = getTonCuoiThangTruoc(maSach,maThangTruoc); 
-                int phatsinh = toncuoi-tondau;
+                int phatsinh = nhapsach(maSach,curMonth,curYear)-bansach(maSach,curMonth,curYear);
+                int toncuoi = tondau+phatsinh;
                 int result = addSach(maThang,maSach,tondau,phatsinh,toncuoi);
                 if(result==1){
                     System.out.println("Them thanh cong:"+maSach);
@@ -484,9 +554,9 @@ public class BaoCao extends javax.swing.JPanel {
             }
             for(KH index : khList){
                 String maKH = index.getMaKH();
-                double nocuoi = index.getNo();
                 double nodau = getNoCuoiThangTruoc(maKH,maThangTruoc); 
-                double phatsinh = nocuoi-nodau;
+                double phatsinh = noKhiMuaSach(maKH,curMonth,curYear) - thutien(maKH,curMonth,curYear);
+                double nocuoi = nodau+phatsinh;
                 int result = addKH(maThang,maKH,nodau,phatsinh,nocuoi);
                 if(result==1){
                     System.out.println("Them thanh cong:"+maKH);
@@ -494,7 +564,7 @@ public class BaoCao extends javax.swing.JPanel {
                     System.out.println("Thêm thất bại: " + maKH);
                 }
             }
-            JOptionPane.showMessageDialog(BaoCao.this, "Thêm báo cáo tồn kho thành công");
+            JOptionPane.showMessageDialog(BaoCao.this, "Thêm báo cáo công nợ thành công");
             rs.close();
             ps.close();
             } catch (SQLException ex) {
@@ -508,10 +578,28 @@ public class BaoCao extends javax.swing.JPanel {
         int year = currentDate.getYear();
         String maThang = Integer.toString(month)+"/"+Integer.toString(year);
         if(isExist(maThang)){
-            JOptionPane.showMessageDialog(BaoCao.this, "Báo cáo tháng này đã tồn tại");
-            return;
+            if(mode){   //tồn
+                String sql = "DELETE FROM baocaotonkho WHERE MABCTK = ?";
+                try {
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, maThang);
+                    ps.execute();
+                } catch (SQLException ex) {
+                    Logger.getLogger(BaoCao.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            else{   //nợ
+                String sql = "DELETE FROM baocaocongno WHERE MABCCN = ?";
+                try {
+                    ps = conn.prepareStatement(sql);
+                    ps.setString(1, maThang);
+                    ps.execute();
+                } catch (SQLException ex) {
+                    Logger.getLogger(BaoCao.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }     
         }
-        lapBaoCaoThangNay(maThang);
+        lapBaoCaoThangNay(month,year);
     }//GEN-LAST:event_TaoActionPerformed
 
 
