@@ -123,15 +123,15 @@
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="Tao" min="-2" pref="249" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
                               <Component id="Thang" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                               <Component id="Nam" min="-2" pref="97" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
                               <Component id="Tim" min="-2" pref="159" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="Tao" alignment="1" min="-2" pref="208" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="22" pref="22" max="-2" attributes="0"/>
                   </Group>
@@ -299,7 +299,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="c0" green="70" red="0" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="T&#x1ea0;O B&#xc1;O C&#xc1;O TH&#xc1;NG N&#xc0;Y"/>
+                <Property name="text" type="java.lang.String" value="C&#x1eac;P NH&#x1eac;T B&#xc1;O C&#xc1;O TH&#xc1;NG N&#xc0;Y"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TaoActionPerformed"/>
