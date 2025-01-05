@@ -39,12 +39,12 @@ public class ThuTien extends javax.swing.JPanel {
      */
     public ThuTien() {
         initComponents();
-        
+        loadComboBox();
            // Thiết lập trạng thái ban đầu cho các nút
                    // Thiết lập trạng thái ban đầu cho các nút
         XacNhan.setVisible(true);  // Hiển thị nút Xác Nhận ban đầu
-        OK.setVisible(false); // Ẩn nút OK ban đầu
-
+        Update.setVisible(false); // Ẩn nút OK ban đầu
+        Xoa.setVisible(false);
         // Đảm bảo rằng không có hàng nào được chọn khi khởi tạo bảng
         jTable1.clearSelection();
          // Lấy component JTextField của JDateChooser
@@ -131,41 +131,10 @@ public class ThuTien extends javax.swing.JPanel {
           } catch (SQLException ex) {
               Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
           }
-      }             
+      }  
     }
       
-      private String generateMaPhieuThu(){
-        String maPhieuThu = "MPT1"; // Mặc định nếu không có dữ liệu
-        String sql = "SELECT MAPHIEUTHU FROM phieuthutien ORDER BY MAPHIEUTHU DESC LIMIT 1";
-        try {
-            ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
-            if(rs.next()){
-                String lastMaPhieuThu = rs.getString("MAPHIEUTHU");
-                // Giả sử mã phiếu thu có dạng PT + số
-                int num = 1;
-                if(lastMaPhieuThu.startsWith("MPT")){
-                    String numStr = lastMaPhieuThu.substring(3);
-                    try {
-                        num = Integer.parseInt(numStr) + 1;
-                    } catch (NumberFormatException e){
-                        num = 1;
-                    }
-                }
-                maPhieuThu = "MPT" + num;
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if(rs != null) rs.close();
-                if(ps != null) ps.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return maPhieuThu;
-    }
+  
     private void setTable1Header(){
         jTable1.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
         @Override
@@ -184,13 +153,26 @@ public class ThuTien extends javax.swing.JPanel {
     private void resetInputFields() {
     hoTen.setText("Họ và tên");
     hoTen.setForeground(Color.GRAY);
-    dienThoai.setText("Điện thoại");
-    dienThoai.setForeground(Color.GRAY);
+    maKH.setForeground(Color.GRAY);
+    maKH.setSelectedItem("Chọn mã khách hàng");
     jDateChooser1.setDate(null);
     soTienThu.setText("Số tiền thu");
     soTienThu.setForeground(Color.GRAY);
     }
-
+    private void loadComboBox(){
+        maKH.removeAllItems();
+        String sql = "SELECT MAKH FROM KHACHHANG";
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            maKH.addItem("Chọn mã khách hàng");
+            while (rs.next()){
+               maKH.addItem(rs.getString("MAKH"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -205,13 +187,14 @@ public class ThuTien extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         hoTen = new javax.swing.JTextField();
-        dienThoai = new javax.swing.JTextField();
         soTienThu = new javax.swing.JTextField();
         panelBorder2 = new com.swing.PanelBorder();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         XacNhan = new rojerusan.RSMaterialButtonRectangle();
-        OK = new rojerusan.RSMaterialButtonRectangle();
+        Update = new rojerusan.RSMaterialButtonRectangle();
+        maKH = new javax.swing.JComboBox<>();
+        Xoa = new rojerusan.RSMaterialButtonRectangle();
 
         setPreferredSize(new java.awt.Dimension(851, 700));
 
@@ -245,6 +228,7 @@ public class ThuTien extends javax.swing.JPanel {
         hoTen.setForeground(new java.awt.Color(0, 49, 64));
         hoTen.setText("Họ và tên");
         hoTen.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 49, 64)));
+        hoTen.setFocusable(false);
         hoTen.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 hoTenFocusGained(evt);
@@ -256,26 +240,6 @@ public class ThuTien extends javax.swing.JPanel {
         hoTen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 hoTenActionPerformed(evt);
-            }
-        });
-
-        dienThoai.setBackground(new java.awt.Color(138, 218, 254));
-        dienThoai.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        dienThoai.setForeground(new java.awt.Color(0, 49, 64));
-        dienThoai.setText("Điện thoại");
-        dienThoai.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 49, 64)));
-        dienThoai.setOpaque(true);
-        dienThoai.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                dienThoaiFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                dienThoaiFocusLost(evt);
-            }
-        });
-        dienThoai.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dienThoaiActionPerformed(evt);
             }
         });
 
@@ -367,7 +331,7 @@ public class ThuTien extends javax.swing.JPanel {
 
         XacNhan.setBackground(new java.awt.Color(255, 255, 255));
         XacNhan.setForeground(new java.awt.Color(0, 88, 128));
-        XacNhan.setText("XÁC NHẬN");
+        XacNhan.setText("THÊM");
         XacNhan.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         XacNhan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -375,13 +339,29 @@ public class ThuTien extends javax.swing.JPanel {
             }
         });
 
-        OK.setBackground(new java.awt.Color(255, 255, 255));
-        OK.setForeground(new java.awt.Color(0, 88, 128));
-        OK.setText("OK");
-        OK.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        OK.addActionListener(new java.awt.event.ActionListener() {
+        Update.setBackground(new java.awt.Color(255, 255, 255));
+        Update.setForeground(new java.awt.Color(0, 88, 128));
+        Update.setText("Cập nhật");
+        Update.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        Update.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                OKActionPerformed(evt);
+                UpdateActionPerformed(evt);
+            }
+        });
+
+        maKH.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                maKHActionPerformed(evt);
+            }
+        });
+
+        Xoa.setBackground(new java.awt.Color(255, 255, 255));
+        Xoa.setForeground(new java.awt.Color(0, 88, 128));
+        Xoa.setText("Xóa");
+        Xoa.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        Xoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                XoaActionPerformed(evt);
             }
         });
 
@@ -393,7 +373,9 @@ public class ThuTien extends javax.swing.JPanel {
                 .addContainerGap(29, Short.MAX_VALUE)
                 .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(background1Layout.createSequentialGroup()
-                        .addComponent(OK, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Update, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(XacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -401,13 +383,13 @@ public class ThuTien extends javax.swing.JPanel {
                         .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(background1Layout.createSequentialGroup()
-                                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(hoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                                    .addComponent(maKH, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(179, 179, 179)
                                 .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(dienThoai, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(soTienThu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(soTienThu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(hoTen, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addGap(43, 43, 43))
         );
         background1Layout.setVerticalGroup(
@@ -415,11 +397,11 @@ public class ThuTien extends javax.swing.JPanel {
             .addGroup(background1Layout.createSequentialGroup()
                 .addGap(45, 45, 45)
                 .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(48, 48, 48)
-                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dienThoai, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(hoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
+                .addGap(49, 49, 49)
+                .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(hoTen, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(maKH))
+                .addGap(27, 27, 27)
                 .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(background1Layout.createSequentialGroup()
                         .addGap(2, 2, 2)
@@ -428,7 +410,8 @@ public class ThuTien extends javax.swing.JPanel {
                 .addGap(37, 37, 37)
                 .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(XacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(OK, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Update, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(panelBorder2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(109, Short.MAX_VALUE))
@@ -464,24 +447,6 @@ public class ThuTien extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_soTienThuFocusGained
 
-    private void dienThoaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dienThoaiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dienThoaiActionPerformed
-
-    private void dienThoaiFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_dienThoaiFocusLost
-        // TODO add your handling code here:
-        if("".equals(dienThoai.getText())){
-            dienThoai.setText("Điện thoại");
-        }
-    }//GEN-LAST:event_dienThoaiFocusLost
-
-    private void dienThoaiFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_dienThoaiFocusGained
-        // TODO add your handling code here:
-        if("Điện thoại".equals(dienThoai.getText())){
-            dienThoai.setText("");
-        }
-    }//GEN-LAST:event_dienThoaiFocusGained
-
     private void hoTenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hoTenActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_hoTenActionPerformed
@@ -501,8 +466,7 @@ public class ThuTien extends javax.swing.JPanel {
     private void XacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_XacNhanActionPerformed
         // TODO add your handling code here:
         // Thu thập dữ liệu từ các trường nhập liệu
-        String hoTenInput = hoTen.getText().trim();
-        String dienThoaiInput = dienThoai.getText().trim();
+        String makh = maKH.getSelectedItem().toString();
         String ngayThuInput = "";
         if(jDateChooser1.getDate() != null){
             ngayThuInput = new java.sql.Date(jDateChooser1.getDate().getTime()).toString();
@@ -511,12 +475,8 @@ public class ThuTien extends javax.swing.JPanel {
         double soTienThuInput = 0.0;
 
         // Kiểm tra tính hợp lệ của dữ liệu
-        if(hoTenInput.isEmpty() || hoTenInput.equals("Họ và tên")){
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập họ và tên khách hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if(dienThoaiInput.isEmpty() || dienThoaiInput.equals("Điện thoại")){
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập số điện thoại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        if("Chọn mã khách hàng".equals(makh)){
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn mã khách hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
         if(ngayThuInput.isEmpty()){
@@ -538,17 +498,14 @@ public class ThuTien extends javax.swing.JPanel {
             return;
         }
 
-        // Kiểm tra xem khách hàng đã tồn tại hay chưa
-        String maKH = "";
-        String sqlCheckKH = "SELECT MAKH, TONGNO FROM khachhang WHERE TENKH = ? AND SODT = ?";
+        // lấy tổng nợ
+        String sqlCheckKH = "SELECT TONGNO FROM khachhang WHERE MAKH = ?";
         double tongNoKH = 0.0;
         try {
             ps = conn.prepareStatement(sqlCheckKH);
-            ps.setString(1, hoTenInput);
-            ps.setString(2, dienThoaiInput);
+            ps.setString(1, makh);
             rs = ps.executeQuery();
             if(rs.next()){
-                maKH = rs.getString("MAKH");
                 tongNoKH = rs.getDouble("TONGNO");
             } else {
                 // Nếu khách hàng chưa tồn tại, hiển thị thông báo lỗi
@@ -579,32 +536,29 @@ public class ThuTien extends javax.swing.JPanel {
             }
         }
 
-        // Tạo MAPHIEUTHU mới
-        String maPhieuThu = generateMaPhieuThu();
-
         // Chèn dữ liệu vào bảng phieuthutien
-        String sqlInsertPTT = "INSERT INTO phieuthutien (MAPHIEUTHU, MAKH, NGAYTHU, SOTIEN) VALUES (?, ?, ?, ?)";
+        String sqlInsertPTT = "INSERT INTO phieuthutien (MAKH, NGAYTHU, SOTIEN) VALUES (?, ?, ?)";
         try {
             ps = conn.prepareStatement(sqlInsertPTT);
-            ps.setString(1, maPhieuThu);
-            ps.setString(2, maKH);
-            ps.setDate(3, java.sql.Date.valueOf(ngayThuInput));
-            ps.setDouble(4, soTienThuInput);
+           
+            ps.setString(1, makh);
+            ps.setDate(2, java.sql.Date.valueOf(ngayThuInput));
+            ps.setDouble(3, soTienThuInput);
             ps.executeUpdate();
 
-            // Nếu KIEMTRATIENTHU == 1, cập nhật TONGNO của khách hàng
+            //cập nhật TONGNO của khách hàng
           
                 String sqlUpdateTongNo = "UPDATE khachhang SET TONGNO = TONGNO - ? WHERE MAKH = ?";
                 try (PreparedStatement psUpdate = conn.prepareStatement(sqlUpdateTongNo)) {
                     psUpdate.setDouble(1, soTienThuInput);
-                    psUpdate.setString(2, maKH);
+                    psUpdate.setString(2, makh);
                     psUpdate.executeUpdate();
                 }
             
 
         } catch (SQLException ex) {
             Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Lỗi khi thêm phiếu thu tiền.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         } finally {
             try {
@@ -628,12 +582,14 @@ public class ThuTien extends javax.swing.JPanel {
     // Lấy số hàng được chọn
     int rowNo = jTable1.getSelectedRow();
     if(rowNo < 0 ) return;
-    OK.setVisible(true);
+    Update.setVisible(true);
     XacNhan.setVisible(false);
+    Xoa.setVisible(true);
+    maKH.setEnabled(false);
     // Lấy dữ liệu từ bảng
     TableModel model = jTable1.getModel();
     String maPhieuThu = model.getValueAt(rowNo, 0).toString(); // MAPHIEUTHU ở cột 0
-    String maKH = model.getValueAt(rowNo, 1).toString(); // MAKH ở cột 1
+    String makh = model.getValueAt(rowNo, 1).toString(); // MAKH ở cột 1
     String tenKH = model.getValueAt(rowNo, 2).toString();
     String soDTSelected = model.getValueAt(rowNo, 4).toString();
     String ngayThu = model.getValueAt(rowNo, 5).toString();
@@ -651,7 +607,7 @@ public class ThuTien extends javax.swing.JPanel {
 
     // Đặt dữ liệu vào các trường nhập liệu
     hoTen.setText(tenKH);
-    dienThoai.setText(soDTSelected);
+    maKH.setSelectedItem(makh);
 
     // Đặt ngày thu
     try {
@@ -666,22 +622,106 @@ public class ThuTien extends javax.swing.JPanel {
     soTienThu.setForeground(Color.BLACK);
     }//GEN-LAST:event_jTable1MouseClicked
 
-    private void OKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OKActionPerformed
+    private void UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateActionPerformed
         // TODO add your handling code here:
-         // Cập nhật lại bảng
+        // dựa vào sự thay đổi trong số tiền thu => thay đổi tổng nợ
+        double thuMoi = Double.parseDouble(soTienThu.getText());
+        double thuCu = Double.parseDouble(jTable1.getValueAt(jTable1.getSelectedRow(), 6).toString());
+        double changed = thuMoi-thuCu;
+        String ngayThuInput = "";
+        if(jDateChooser1.getDate() != null){
+            ngayThuInput = new java.sql.Date(jDateChooser1.getDate().getTime()).toString();
+        }
+        String makh = maKH.getSelectedItem().toString();
+        String sql = "UPDATE phieuthutien SET NGAYTHU = ?, SOTIEN = ? WHERE MAKH = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setDate(1, java.sql.Date.valueOf(ngayThuInput));
+            ps.setDouble(2, thuMoi);
+            ps.setString(3, makh);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        sql = "UPDATE khachhang SET TONGNO = TONGNO - ? WHERE MAKH = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setDouble(1, changed);
+            ps.setString(2, makh);
+            int result = ps.executeUpdate();
+            if(result ==1){
+                JOptionPane.showMessageDialog(this, "Cập nhật phiếu thu tiền thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        // Cập nhật lại bảng
         loadTable1();
-
         // Reset các trường nhập liệu
         resetInputFields();
-
         // Ẩn nút OK và hiển thị nút Xác Nhận
-        OK.setVisible(false);
+        Update.setVisible(false);
         XacNhan.setVisible(true);
-
+        Xoa.setVisible(false);
+        maKH.setEnabled(true);
         // Reset biến lưu trữ thông tin phiếu thu
         selectedMaPhieuThu = null;
         selectedSoTienThu = 0.0;
-    }//GEN-LAST:event_OKActionPerformed
+    }//GEN-LAST:event_UpdateActionPerformed
+
+    private void maKHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_maKHActionPerformed
+        if("Chọn mã khách hàng".equals(maKH.getSelectedItem().toString())) return;
+        String sql = "SELECT TENKH FROM KHACHHANG WHERE MAKH = ?";
+        String makh = maKH.getSelectedItem().toString();
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, makh);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                hoTen.setText(rs.getString("TENKH"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_maKHActionPerformed
+
+    private void XoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_XoaActionPerformed
+        double thuCu = Double.parseDouble(jTable1.getValueAt(jTable1.getSelectedRow(), 6).toString());
+        String mapt = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+        String makh = maKH.getSelectedItem().toString();
+        String sql = "DELETE FROM phieuthutien WHERE maphieuthu = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, mapt);
+            int result = ps.executeUpdate();
+            if(result ==1){
+                JOptionPane.showMessageDialog(this, "Xóa phiếu thu tiền thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        sql = "UPDATE khachhang SET TONGNO = TONGNO + ? WHERE MAKH = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setDouble(1, thuCu);
+            ps.setString(2, makh);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ThuTien.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        loadTable1();
+        // Reset các trường nhập liệu
+        resetInputFields();
+        // Ẩn nút OK và hiển thị nút Xác Nhận
+        Update.setVisible(false);
+        XacNhan.setVisible(true);
+        Xoa.setVisible(false);
+        maKH.setEnabled(true);
+        // Reset biến lưu trữ thông tin phiếu thu
+        selectedMaPhieuThu = null;
+        selectedSoTienThu = 0.0;
+    }//GEN-LAST:event_XoaActionPerformed
 
     private int getKiemTraTienThu() {
     int kiemTra = 0; // Mặc định là không cần kiểm tra
@@ -706,15 +746,16 @@ public class ThuTien extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private rojerusan.RSMaterialButtonRectangle OK;
+    private rojerusan.RSMaterialButtonRectangle Update;
     private rojerusan.RSMaterialButtonRectangle XacNhan;
+    private rojerusan.RSMaterialButtonRectangle Xoa;
     private com.component.Background background1;
-    private javax.swing.JTextField dienThoai;
     private javax.swing.JTextField hoTen;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private transient javax.swing.JTable jTable1;
+    private javax.swing.JComboBox<String> maKH;
     private com.swing.PanelBorder panelBorder1;
     private com.swing.PanelBorder panelBorder2;
     private javax.swing.JTextField soTienThu;

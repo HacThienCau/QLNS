@@ -494,7 +494,7 @@ public class BaoCao extends javax.swing.JPanel {
                     System.out.println("Thêm thất bại: " + maKH);
                 }
             }
-            JOptionPane.showMessageDialog(BaoCao.this, "Thêm báo cáo tồn kho thành công");
+            JOptionPane.showMessageDialog(BaoCao.this, "Thêm báo cáo công nợ thành công");
             rs.close();
             ps.close();
             } catch (SQLException ex) {

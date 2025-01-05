@@ -39,7 +39,8 @@ public class QLKH extends javax.swing.JPanel {
         initComponents();
         setTable1Header();
         loadTable1();
-        //Them.setVisible(true);
+        Them.setVisible(true);
+        Xoa.setVisible(false);
         Sua.setVisible(false);
     }
     private void loadTable1(){
@@ -93,16 +94,14 @@ public class QLKH extends javax.swing.JPanel {
         }
         });
     }
-    private int addCustomer(String ht, String dc, String sdt, String tn) {
-        String sql = "INSERT INTO khachhang (MAKH,TENKH,DIACHI,SODT,TONGNO) VALUES (?,?,?,?,?)";
-        String makh = "KH".concat(String.valueOf(jTable1.getRowCount()+1)) ;
+    private int addCustomer(String ht, String dc, String sdt) {
+        String sql = "INSERT INTO khachhang (TENKH,DIACHI,SODT,TONGNO) VALUES (?,?,?,0)";
         try {
             ps = conn.prepareStatement(sql);
-            ps.setString(1,makh);
-            ps.setString(2,ht);
-            ps.setString(3,dc);
-            ps.setString(4,sdt);
-            ps.setFloat(5,Float.parseFloat(tn)); 
+     
+            ps.setString(1,ht);
+            ps.setString(2,dc);
+            ps.setString(3,sdt);
             ps.executeUpdate();
             loadTable1();
             return 1;
@@ -125,21 +124,23 @@ public class QLKH extends javax.swing.JPanel {
         } catch (SQLException ex) {
             if(ex.getMessage().contains("SODT")){
                 JOptionPane.showMessageDialog(QLKH.this, "Số điện thoại không hợp lệ");
+                return 0;
             }
-        }catch(NumberFormatException e) {
-                JOptionPane.showMessageDialog(QLKH.this, "Tổng nợ không hợp lệ");
+            if(ex.getMessage().contains("Cannot delete")){
+                JOptionPane.showMessageDialog(QLKH.this, "Không thể xóa khách hàng do vẫn còn dữ liệu liên quan đến khách hàng");
+                return 0;
+            }
         }
         return 0;
     }
-    private int updateCustomer(String makh, String ht, String dc, String sdt, String tn) {
-        String sql = "UPDATE khachhang SET TENKH = ?, DIACHI = ?, SODT=?, TONGNO=? WHERE MAKH = ?";
+    private int updateCustomer(String makh, String ht, String dc, String sdt) {
+        String sql = "UPDATE khachhang SET TENKH = ?, DIACHI = ?, SODT=? WHERE MAKH = ?";
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1,ht);
             ps.setString(2,dc);
-            ps.setString(3,sdt);
-            ps.setFloat(4,Float.parseFloat(tn)); 
-            ps.setString(5,makh);
+            ps.setString(3,sdt); 
+            ps.setString(4,makh);
             ps.executeUpdate();
             return 1;
         } catch (SQLException ex) {
@@ -172,6 +173,8 @@ public class QLKH extends javax.swing.JPanel {
         tablePanel = new com.swing.PanelBorder();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        Xoa = new javax.swing.JButton();
+        Them = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(850, 695));
 
@@ -232,22 +235,22 @@ public class QLKH extends javax.swing.JPanel {
         tongNo.setForeground(new java.awt.Color(0, 49, 64));
         tongNo.setText("Tổng nợ");
         tongNo.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 49, 64)));
-        tongNo.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                tongNoFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                tongNoFocusLost(evt);
-            }
-        });
+        tongNo.setFocusable(false);
 
-        maKH.setEditable(false);
         maKH.setBackground(new java.awt.Color(138, 218, 254));
         maKH.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         maKH.setForeground(new java.awt.Color(0, 49, 64));
         maKH.setText("Mã khách hàng");
         maKH.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 49, 64)));
         maKH.setFocusable(false);
+        maKH.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                maKHFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                maKHFocusLost(evt);
+            }
+        });
 
         Sua.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         Sua.setForeground(new java.awt.Color(0, 88, 128));
@@ -326,6 +329,28 @@ public class QLKH extends javax.swing.JPanel {
                     .addContainerGap(23, Short.MAX_VALUE)))
         );
 
+        Xoa.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        Xoa.setForeground(new java.awt.Color(0, 88, 128));
+        Xoa.setText("Xóa");
+        Xoa.setToolTipText("");
+        Xoa.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 88, 128), 3, true));
+        Xoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                XoaActionPerformed(evt);
+            }
+        });
+
+        Them.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        Them.setForeground(new java.awt.Color(0, 88, 128));
+        Them.setText("Thêm");
+        Them.setToolTipText("");
+        Them.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 88, 128), 3, true));
+        Them.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ThemActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout background1Layout = new javax.swing.GroupLayout(background1);
         background1.setLayout(background1Layout);
         background1Layout.setHorizontalGroup(
@@ -338,15 +363,16 @@ public class QLKH extends javax.swing.JPanel {
                     .addComponent(maKH, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(background1Layout.createSequentialGroup()
-                        .addGap(138, 138, 138)
-                        .addComponent(Sua, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(tongNo, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                        .addComponent(diaChi))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, background1Layout.createSequentialGroup()
-                        .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tongNo, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
-                            .addComponent(diaChi))
-                        .addGap(6, 6, 6)))
-                .addGap(78, 78, 78))
+                        .addComponent(Them, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Sua, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(84, 84, 84))
             .addGroup(background1Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addComponent(panelBorder1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -372,10 +398,11 @@ public class QLKH extends javax.swing.JPanel {
                 .addGap(45, 45, 45)
                 .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(maKH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(background1Layout.createSequentialGroup()
-                        .addGap(9, 9, 9)
-                        .addComponent(Sua, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(36, 36, 36)
+                    .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(Sua)
+                        .addComponent(Xoa)
+                        .addComponent(Them)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addComponent(tablePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40))
         );
@@ -404,6 +431,9 @@ public class QLKH extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_hoTenFocusLost
 
+    
+    
+    
     private void diaChiFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_diaChiFocusGained
         if("Địa chỉ".equals(diaChi.getText())){
             diaChi.setText("");
@@ -428,29 +458,16 @@ public class QLKH extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_soDTFocusLost
 
-    private void tongNoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tongNoFocusGained
-        if("Tổng nợ".equals(tongNo.getText())){
-            tongNo.setText("");
-        }
-    }//GEN-LAST:event_tongNoFocusGained
-
-    private void tongNoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tongNoFocusLost
-        if("".equals(tongNo.getText())){
-            tongNo.setText("Tổng nợ");
-        }
-    }//GEN-LAST:event_tongNoFocusLost
-
     private void SuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SuaActionPerformed
         String ht = hoTen.getText();
         String dc = diaChi.getText();
         String sdt = soDT.getText();
-        String tn = tongNo.getText();
         String makh = maKH.getText();
-        if(ht.equals("Họ và tên")||sdt.equals("Số điện thoại")||tn.equals("Tổng nợ")){
+        if(ht.equals("Họ và tên")||sdt.equals("Số điện thoại")){
             JOptionPane.showMessageDialog(QLKH.this, "Vui lòng nhập đầy đủ thông tin");
             return;
         }
-        int result = updateCustomer(makh,ht,dc,sdt,tn);
+        int result = updateCustomer(makh,ht,dc,sdt);
         if(result==1){
             JOptionPane.showMessageDialog(QLKH.this, "Cập nhật khách hàng thành công");
             hoTen.setText("Họ và tên");
@@ -458,7 +475,10 @@ public class QLKH extends javax.swing.JPanel {
             soDT.setText("Số điện thoại");
             tongNo.setText("Tổng nợ");
             maKH.setText("Mã khách hàng");
+    
             loadTable1();
+            Them.setVisible(true);
+            Xoa.setVisible(false);
             Sua.setVisible(false);
             return;
         }
@@ -468,7 +488,10 @@ public class QLKH extends javax.swing.JPanel {
     private void getCustomerFromTable(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_getCustomerFromTable
         int rowNo = jTable1.getSelectedRow();
         if(rowNo < 0 ) return;
+        Them.setVisible(false);
+        Xoa.setVisible(true);
         Sua.setVisible(true);
+        maKH.setFocusable(false);
         TableModel model = jTable1.getModel();
         maKH.setText(model.getValueAt(rowNo, 0).toString());
         hoTen.setText(model.getValueAt(rowNo, 1).toString());
@@ -479,9 +502,71 @@ public class QLKH extends javax.swing.JPanel {
         tongNo.setText(model.getValueAt(rowNo, 4).toString());
     }//GEN-LAST:event_getCustomerFromTable
 
+    private void XoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_XoaActionPerformed
+        int rowNo = jTable1.getSelectedRow();
+        TableModel model = jTable1.getModel();
+        String makh = model.getValueAt(rowNo, 0).toString();
+        int result = deleteCustomer(makh);
+        if(result == 1){
+           JOptionPane.showMessageDialog(QLKH.this, "Xóa khách hàng thành công");
+        }
+        else{
+            JOptionPane.showMessageDialog(QLKH.this, "Xóa khách hàng không thành công");
+        }
+        hoTen.setText("Họ và tên");
+        diaChi.setText("Địa chỉ");
+        soDT.setText("Số điện thoại");
+        tongNo.setText("Tổng nợ");
+        maKH.setText("Mã khách hàng");
+        loadTable1();
+        Them.setVisible(true);
+        Xoa.setVisible(false);
+        Sua.setVisible(false);
+       
+    }//GEN-LAST:event_XoaActionPerformed
+
+    private void ThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThemActionPerformed
+        String ht = hoTen.getText();
+        String dc = diaChi.getText();
+        String sdt = soDT.getText();
+       
+        if(ht.equals("Họ và tên")||sdt.equals("Số điện thoại")){
+            JOptionPane.showMessageDialog(QLKH.this, "Vui lòng nhập đầy đủ thông tin");
+            return;
+        }    
+        int result = addCustomer(ht, dc, sdt); 
+        if(result == 1){
+           JOptionPane.showMessageDialog(QLKH.this, "Thêm khách hàng thành công");
+           hoTen.setText("Họ và tên");
+            diaChi.setText("Địa chỉ");
+            soDT.setText("Số điện thoại");
+            tongNo.setText("Tổng nợ");
+            maKH.setText("Mã khách hàng");
+            loadTable1();
+        }
+        else{
+            JOptionPane.showMessageDialog(QLKH.this, "Thêm khách hàng không thành công");
+        }
+        
+    }//GEN-LAST:event_ThemActionPerformed
+
+    private void maKHFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_maKHFocusGained
+        if("Mã khách hàng".equals(maKH.getText())){
+            maKH.setText("");
+        }
+    }//GEN-LAST:event_maKHFocusGained
+
+    private void maKHFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_maKHFocusLost
+       if("".equals(maKH.getText())){
+            maKH.setText("Mã khách hàng");
+        }
+    }//GEN-LAST:event_maKHFocusLost
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Sua;
+    private javax.swing.JButton Them;
+    private javax.swing.JButton Xoa;
     private com.component.Background background1;
     private javax.swing.JTextField diaChi;
     private javax.swing.JTextField hoTen;
