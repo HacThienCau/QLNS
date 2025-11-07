@@ -59,7 +59,7 @@ Trong đồ án này, Server = Dữ liệu, còn Client = Giao diện + Xử lý
 | 5       | MySQL JDBC Driver     | Driver kết nối Java ↔ MySQL.
 
 ### Thiết kế dữ liệu 
-![Sơ đồ dữ liệu](Database Diagram.png)
+![Sơ đồ dữ liệu](DatabaseDiagram.png)
 
 ## ⚙️ Tech Stack
 - **Ngôn ngữ & IDE** : Java (Swing), NetBeans IDE
